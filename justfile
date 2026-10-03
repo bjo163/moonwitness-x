@@ -12,24 +12,35 @@ default:
     @just --list
 
 # ==============================================================================
-# 🧪 UNIVERSAL TESTING SUITE (RUST, GO, PYTHON, TYPESCRIPT)
+# 🧪 UNIVERSAL TESTING & VALIDATION SUITE (RUST, GO, PYTHON, TYPESCRIPT)
 # ==============================================================================
 
-# Jalankan seluruh test suite across all languages (Rust 43 tests, Go, Python)
-test: test-rust test-go test-python
-    @echo "✅ Seluruh test suite Universe Monorepo berhasil dijalankan!"
+# Jalankan seluruh validasi dan test suite lintas bahasa (Rust tests, Go checks, Python checks/tests)
+test: test-rust check-go test-python
+    @echo "✅ Seluruh test dan validasi suite Universe Monorepo selesai dijalankan!"
 
-# Uji seluruh modul Rust (Kernel, Ephemeris, Hijri, CelCron, Waktu Semesta, Time Daemon)
+# Uji seluruh modul Rust (mts-core, mts-ephemeris, mts-hijri, mts-celcron, tests)
 test-rust:
     cargo test --workspace
 
-# Uji Go Celestial Gateway
-test-go:
+# Validasi statis modul Go (Gateway, Radius, Runner)
+check-go:
     cd services/gateway; go vet ./...
+    cd services/radius; go vet ./...
+    cd services/runner; go vet ./...
 
-# Uji Python Analytics Service
-test-python:
+# Jalankan Go test runner jika terdapat unit test
+test-go:
+    cd services/gateway; go test ./...
+    cd services/radius; go test ./...
+    cd services/runner; go test ./...
+
+# Validasi kompilasi modul Python Analytics
+check-python:
     python -m py_compile services/analytics/main.py
+
+# Jalankan unit test dan validasi kompilasi Python
+test-python: check-python
     .venv\Scripts\python.exe -m unittest discover -s services/erp/tests -v
 
 # Apply reviewed ERP Alembic migrations to the configured MW_ERP_DATABASE_URL

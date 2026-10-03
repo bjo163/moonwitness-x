@@ -10,15 +10,15 @@ Dokumen ini melacak seluruh tahapan implementasi teknis sistem waktu **MTS** dar
 
 | Fase        | Nama Fase                   | Fokus Utama                                     |             Status              |
 | :---------- | :-------------------------- | :---------------------------------------------- | :-----------------------------: |
-| **Fase 0**  | **Workspace & Scaffolding** | Setup Rust Workspace di `services/time`         |           ✅ Selesai            |
+| **Fase 0**  | **Workspace & Scaffolding** | Setup Rust Workspace di root (`crates/*` & `services/time`) |           ✅ Selesai            |
 | **Fase 1**  | **`mts-core`**              | Matematika Rasional & Roda Gigi Antikythera     | ✅ Selesai (20/20 Tests Lulus)  |
-| **Fase 2**  | **`mts-ephemeris`**         | Algoritma Orbit Bulan-Matahari & Delta-T        |  ✅ Selesai (8/8 Tests Lulus)   |
-| **Fase 3**  | **`mts-hijri`**             | True Celestial Clock (TCC) & Proyeksi Hijriah   |  ✅ Selesai (6/6 Tests Lulus)   |
-| **Fase 4**  | **`mts-celcron`**           | Scheduler Event Langit (Ijtimak & Hilal)        |  ✅ Selesai (2/2 Tests Lulus)   |
+| **Fase 2**  | **`mts-ephemeris`**         | Algoritma Orbit Bulan-Matahari & Delta-T        | ✅ Selesai (11/11 Tests Lulus)  |
+| **Fase 3**  | **`mts-hijri`**             | True Celestial Clock (TCC) & Proyeksi Hijriah   |  ✅ Selesai (7/7 Tests Lulus)   |
+| **Fase 4**  | **`mts-celcron`**           | Scheduler Event Langit (Ijtimak & Hilal)        |  ✅ Selesai (4/4 Tests Lulus)   |
 | **Fase 5**  | **`mts-daemon`**            | Standalone Service (CLI & HTTP REST Daemon)     |    ✅ Selesai (Binary Ready)    |
 | **Fase 6**  | **`mts-wasm`**              | Kompilasi WASM untuk Browser & UI               |         ⏳ Selanjutnya          |
-| **Fase 7**  | **Validasi & Benchmarking** | Uji Banding Data NASA JPL (Rentang 5.000 Tahun) | ✅ Selesai (100% Terverifikasi) |
-| **Fase 8**  | **Waktu Semesta & 4 Kitab** | Kosmologi FLRW & Asas Korelasi 4 Kitab Wahyu    | ✅ Selesai (43/43 Tests Lulus)  |
+| **Fase 7**  | **Validasi & Benchmarking** | Uji Banding Data NASA JPL (Rentang 5.000 Tahun) |  ✅ Selesai (3/3 Tests Lulus)   |
+| **Fase 8**  | **Waktu Semesta & 4 Kitab** | Kosmologi FLRW & Asas Korelasi 4 Kitab Wahyu    |  ✅ Selesai (4/4 Tests Lulus)   |
 | **Fase 9**  | **`services/runner`**       | Universe Runner & Coolify Docker Engine (Go)    |   ✅ Selesai (Daemon Active)    |
 | **Fase 10** | **`services/radius`**       | ToughRADIUS Broadband AAA Engine (Go)           |   ✅ Selesai (Daemon Active)    |
 
@@ -28,7 +28,7 @@ Dokumen ini melacak seluruh tahapan implementasi teknis sistem waktu **MTS** dar
 
 ### Fase 0: Setup Workspace & Toolchain
 
-- [x] Inisialisasi struktur direktori Rust workspace di `services/time`.
+- [x] Inisialisasi struktur direktori Rust workspace di root (`crates/*` dan `services/time`).
 - [x] Buat root `Cargo.toml` yang mendeklarasikan seluruh member crate (`mts-core`, `mts-ephemeris`, `mts-hijri`, `mts-celcron`, `mts-daemon`).
 - [x] Setup script otomasi test runner dan build release.
 
@@ -56,7 +56,7 @@ _Tujuan: Membangun simulasi roda gigi mekanis Antikythera tanpa floating-point d
   - [x] Model mekanis eksentrisitas lunar (anomali Keplerian).
   - [x] Validasi rumus kecepatan sudut variabel perigee vs apogee.
 - [x] **Unit Tests**:
-  - [x] Uji simulai rotasi 1.000 siklus tanpa kehilangan 1 tick rasional (13 unit tests lulus).
+  - [x] Uji simulasi rotasi 1.000 siklus tanpa kehilangan 1 tick rasional (20 unit tests lulus).
 
 ---
 
@@ -77,7 +77,7 @@ _Tujuan: Menghitung posisi bujur/lintang sejati Matahari dan Bulan di langit._
   - [x] Transformasi koordinat geosentris ke toposentrik berdasarkan koordinat geografis pengamat (Lintang, Bujur, Ketinggian mdpl).
   - [x] Koreksi paralaks horizontal bulan dan refraksi atmosfer ufuk.
 - [x] **Unit Tests**:
-  - [x] Verifikasi posisi matahari dan bulan terhadap tabel almanak standar IAU (8 unit tests lulus).
+  - [x] Verifikasi posisi matahari dan bulan terhadap tabel almanak standar IAU (11 unit tests lulus).
 
 ---
 
@@ -98,7 +98,7 @@ _Tujuan: Membangun poros waktu sejati dan generator kalender Hijriah determinist
 - [x] **Modul `utc_bridge.rs`**:
   - [x] Konversi dua arah antara MTS Timestamp dan ISO-8601 UTC / POSIX Epoch.
 - [x] **Unit Tests**:
-  - [x] Verifikasi perhitungan kalender dan jembatan UTC (6 unit tests lulus).
+  - [x] Verifikasi perhitungan kalender dan jembatan UTC (7 unit tests lulus).
 
 ---
 
@@ -113,7 +113,7 @@ _Tujuan: Menggantikan cron statis dengan mesin pencari akar astronomis determini
 - [x] **Modul `scheduler.rs`**:
   - [x] Antrean prioritas penjadwalan dan pemancar event broadcast asinkron.
 - [x] **Unit Tests**:
-  - [x] Simulasi pencarian waktu ijtimak berturut-turut dengan toleransi deviasi sub-detik (2 unit tests lulus).
+  - [x] Simulasi pencarian waktu ijtimak berturut-turut dengan toleransi deviasi sub-detik (4 unit tests lulus).
 
 ---
 
@@ -148,8 +148,8 @@ _Tujuan: Memungkinkan kalkulasi waktu Antikythera berjalan offline di frontend w
 
 _Tujuan: Membuktikan bahwa sistem waktu ini tidak akan mengalami crash atau drift selama ribuan tahun._
 
-- [x] Uji data referensi emas NASA JPL Horizons & Fred Espenak (Gerhana tahun 632 M, J2000, 2017, 2024, 2027) 100% MATCH.
-- [x] Uji simulasi 5.000 tahun virtual (-3000 SM s/d +3000 M) memastikan nol integer overflow dan akumulasi drift 0.000000000 ms (Zero-Drift Mutlak).
+- [x] Uji data referensi emas NASA JPL Horizons & Fred Espenak (Gerhana tahun 632 M, J2000, 2017, 2024, 2027) terverifikasi via 3 integration tests.
+- [x] Uji simulasi 5.000 tahun virtual (-3000 SM s/d +3000 M) memastikan nol integer overflow dan konvergensi rasional.
 - [x] Benchmark throughput kecepatan hitung efemeris: ~2.900.000 evaluasi per detik.
 - [x] Subcommand `mts benchmark` terintegrasi langsung di dalam binary daemon.
 
@@ -185,6 +185,8 @@ Sistem locale, dictionary bertipe, fallback Inggris, dan CI gate sudah terpasang
 - [x] Terjemahkan landing utama: hero, fitur, ulasan, tim, harga, statistik, FAQ, CTA, dan kontak ke dictionary EN/ID.
 - [x] Terjemahkan konten dan tabel harga, FAQ harga, paket generik, metode pembayaran, detail tagihan, serta checkout wizard (keranjang, alamat, pengiriman, pembayaran, konfirmasi) ke dictionary EN/ID.
   - [x] Wizard listing properti: pilihan jual/sewa, detail properti, tipe/negara, field alamat, dan navigasi langkah memakai dictionary EN/ID.
+  - [x] Langkah luas dan kondisi properti: satuan area, tanggal tersedia, status serah terima, jenis transaksi, dan atribut lokasi memakai dictionary EN/ID.
+  - [x] Wizard pembuatan deal: tipe pengguna, batas transaksi, metode pembayaran, status, diskon sekali pakai, dan navigasi memakai dictionary EN/ID.
 - [ ] Migrasi i18n global belum selesai; audit awal sebelum migrasi help center dan Workloads/RADIUS mencatat kira-kira 2.470 literal lama. Angka terkini perlu dihitung ulang setelah cakupan gate diperluas, dan goal belum boleh ditutup sebelum seluruh UI aktif bersih.
 - [x] Terjemahkan seluruh copy help center front-page: header pencarian, kartu artikel, knowledge base, konten artikel, gambar, dan CTA ke dictionary EN/ID.
 - [ ] Metadata dasar locale dan front-page sudah memakai brand Moonwitness; metadata ERP, RADIUS, dan Workloads mengikuti locale. Audit SEO route lain masih perlu dilakukan.
@@ -196,7 +198,10 @@ Sistem locale, dictionary bertipe, fallback Inggris, dan CI gate sudah terpasang
   - [x] Layout form collapsible: alamat, opsi pengiriman, pembayaran/kartu, aksi dan pilihan alamat memakai dictionary EN/ID.
   - [x] Layout form separator: judul, bagian, field akun/pribadi, pilihan, aksesibilitas, tanggal, dan aksi memakai dictionary EN/ID.
   - [x] Form validasi dasar: field, opsi pilihan, error wajib isi, checkbox persetujuan, toast, dan aksi memakai dictionary EN/ID.
+  - [x] Drawer tambah pelanggan e-commerce: informasi dasar, negara, alamat pengiriman/penagihan, label/placeholder, dan aksi memakai dictionary EN/ID.
+  - [x] Sidebar tambah/perbarui acara kalender: judul, kalender, tanggal, tamu, deskripsi, dan aksi memakai dictionary EN/ID.
   - [x] Dashboard Prayer & Qibla: judul/status, stasiun observasi, nama dan aturan waktu shalat, arah mata angin, kompas, dan telemetri memakai dictionary EN/ID.
+  - [x] Dashboard konjungsi dan hilal: radar ufuk, kriteria Danjon/MABIMS, status, stasiun, arah, satuan, dan telemetri memakai dictionary `celestial.hilal` EN/ID.
   - [x] Drawer tambah pengguna: label, placeholder, peran, paket, status, negara, validasi, dan aksi memakai dictionary EN/ID.
   - [x] Layout form bertab: tab personal/account/social, field, pilihan negara/bahasa, input tanggal/telepon, aksesibilitas, dan aksi memakai dictionary EN/ID.
   - [x] Customizer tema global: pilihan warna, mode, skin, tata letak, lebar konten, dan arah baca memakai kamus EN/ID.
@@ -223,7 +228,7 @@ Sistem locale, dictionary bertipe, fallback Inggris, dan CI gate sudah terpasang
 3. Halaman contoh/template: charts, widgets, pricing, FAQ, profil, dan halaman misc.
 4. Tutup format lokal, verifikasi tiap rute locale, serta lengkapi audit gate agar mencakup sumber teks objek/array dan non-TSX yang dirender.
 
-`lint:i18n` bersifat wajib di CI untuk TSX/JSX yang berubah: literal UI membuat job gagal, termasuk teks JSX, label, placeholder, teks alternatif gambar, dan aria-label. Gunakan `pnpm run lint:i18n -- --all` untuk audit seluruh TSX/JSX tanpa mengandalkan daftar perubahan Git. Snapshot audit global terakhir menemukan 2.214 temuan pada 296 berkas; hasil perlu terus dibersihkan. Pemeriksaan fixture profil dan pricing memvalidasi konten yang dirender memakai key translation. Komponen baru wajib memakai dictionary.
+`lint:i18n` bersifat wajib di CI untuk TSX/JSX yang berubah: literal UI membuat job gagal, termasuk teks JSX, label, placeholder, teks alternatif gambar, dan aria-label. Gunakan `pnpm run lint:i18n -- --all` untuk audit seluruh TSX/JSX tanpa mengandalkan daftar perubahan Git. Snapshot audit global terakhir menemukan 2.088 temuan pada 291 berkas; hasil perlu terus dibersihkan. Pemeriksaan fixture profil dan pricing memvalidasi konten yang dirender memakai key translation. Komponen baru wajib memakai dictionary.
 
 ---
 
@@ -270,8 +275,8 @@ _Tujuan: Mengharmonisasikan waktu kosmologis relativistik modern (FLRW Metric & 
   - `mts benchmark`: Menyertakan Bagian 4 validasi kosmologi & 4 Kitab Wahyu.
   - REST API `GET /api/v1/cosmic` dan `GET /api/v1/cosmic/revelations`.
 - [x] **Suite Pengujian Terpadu**:
-  - `crates/mts-daemon/tests/cosmic_revelations_test.rs`: 4 integrasi test mendalam.
-  - Total 43 unit & integration test pada workspace: **100% LULUS (Semua Hijau)**.
+  - `services/time/tests/cosmic_revelations_test.rs`: 4 integrasi test mendalam.
+  - Total 49 unit & integration test pada Rust workspace: **100% LULUS (Semua Hijau)**.
 
 ---
 
@@ -343,4 +348,4 @@ _Tujuan: Membangun server RADIUS AAA (Authentication, Authorization, Accounting)
   - [x] Halaman dashboard lengkap: `/apps/radius` dengan 5 Tab: _Active Sessions_, _Subscribers & Vouchers_, _Rate Profiles (MikroTik)_, _NAS Routers & CoA_, dan _Live Auth Simulator_.
   - [x] Modal Batch Voucher Generator dengan kustomisasi prefix dan profil.
   - [x] Generator skrip terminal RouterOS MikroTik untuk registrasi RADIUS server 1-klik.
-  - [x] Target `justfile`: `serve-radius`, `dev`, dan `dev-single` telah tersinkronisasi 6 service.
+  - [x] Target `justfile`: `serve-radius`, `dev`, dan `dev-single` telah tersinkronisasi 7 service.

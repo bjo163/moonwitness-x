@@ -111,7 +111,7 @@ Semua perintah terpusat dikelola menggunakan `just`:
 # Tampilkan daftar seluruh perintah yang tersedia
 just
 
-# Uji seluruh test suite lintas bahasa (Rust 43/43 tests, Go vet, Python compile)
+# Jalankan validasi dan test suite lintas bahasa (Rust tests, Go checks, Python checks)
 just test
 
 # Jalankan Time Daemon Service (Rust Axum di http://localhost:5155)
