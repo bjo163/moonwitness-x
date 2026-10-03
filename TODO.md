@@ -189,7 +189,8 @@ Sistem locale, dictionary bertipe, fallback Inggris, dan CI gate sudah terpasang
 - [ ] Metadata dasar locale dan front-page sudah memakai brand Moonwitness; metadata ERP, RADIUS, dan Workloads mengikuti locale. Audit SEO route lain masih perlu dilakukan.
 - [x] Terjemahkan shell dashboard bersama: profil, mode terang/gelap/sistem, notifikasi, shortcuts, footer, scroll-to-top, termasuk data contoh shortcut/notifikasi, ke namespace `common`.
 - [ ] Migrasikan aksi umum, status, validasi form, tabel, dialog, aplikasi ERP/e-commerce/academy/invoice/email/calendar/chat/kanban/logistics, dan konten dashboard ke namespace dictionary terkelompok.
-  - [x] Aplikasi Invoice: kartu tambah/edit, daftar/status, kartu dan aksi pratinjau, drawer pelanggan/pembayaran/pengiriman, serta data demo memakai kamus EN/ID.
+- [x] Aplikasi Invoice: kartu tambah/edit, daftar/status, kartu dan aksi pratinjau, drawer pelanggan/pembayaran/pengiriman, serta data demo memakai kamus EN/ID.
+  - [x] Form wizard validasi linear: langkah, label/placeholder, pilihan negara dan bahasa, aksesibilitas, validasi, toast, dan aksi memakai dictionary EN/ID.
   - [x] Customizer tema global: pilihan warna, mode, skin, tata letak, lebar konten, dan arah baca memakai kamus EN/ID.
   - [x] Dashboard Antikythera: tab, simulasi roda gigi, zodiak, kontrol waktu, telemetri siklus, dan prediksi gerhana memakai kamus EN/ID.
   - [x] Form tambah produk e-commerce: stok/pengiriman, pengelompokan, informasi/deskripsi, harga, varian, gambar, dan aksi publikasi memakai kamus EN/ID.
@@ -214,7 +215,7 @@ Sistem locale, dictionary bertipe, fallback Inggris, dan CI gate sudah terpasang
 3. Halaman contoh/template: charts, widgets, pricing, FAQ, profil, dan halaman misc.
 4. Tutup format lokal, verifikasi tiap rute locale, serta lengkapi audit gate agar mencakup sumber teks objek/array dan non-TSX yang dirender.
 
-`lint:i18n` bersifat wajib di CI untuk TSX/JSX yang berubah: literal UI membuat job gagal, termasuk teks JSX, label, placeholder, teks alternatif gambar, dan aria-label. Gunakan `pnpm run lint:i18n -- --all` untuk audit seluruh TSX/JSX tanpa mengandalkan daftar perubahan Git. Snapshot audit global terakhir menemukan 2.653 temuan pada 307 berkas; hasil perlu terus dibersihkan. Pemeriksaan fixture profil dan pricing memvalidasi konten yang dirender memakai key translation. Komponen baru wajib memakai dictionary.
+`lint:i18n` bersifat wajib di CI untuk TSX/JSX yang berubah: literal UI membuat job gagal, termasuk teks JSX, label, placeholder, teks alternatif gambar, dan aria-label. Gunakan `pnpm run lint:i18n -- --all` untuk audit seluruh TSX/JSX tanpa mengandalkan daftar perubahan Git. Snapshot audit global terakhir menemukan 2.595 temuan pada 306 berkas; hasil perlu terus dibersihkan. Pemeriksaan fixture profil dan pricing memvalidasi konten yang dirender memakai key translation. Komponen baru wajib memakai dictionary.
 
 ---
 
