@@ -1,0 +1,32 @@
+[project]
+name = "moonwitness-erp"
+version = "0.1.0"
+description = "Moonwitness ERP — Odoo-inspired Modular Business & Subscription Engine"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.2.0",
+    "sqlalchemy[asyncio]>=2.0.30,<2.1",
+    "asyncpg>=0.29.0",
+    "cryptography>=42.0.0",
+    "tzdata>=2024.1",
+    "alembic>=1.13.0",
+    "httpx>=0.27.0",
+    "opentelemetry-api>=1.25.0",
+    "opentelemetry-sdk>=1.25.0",
+    "opentelemetry-exporter-otlp-proto-http>=1.25.0",
+    "opentelemetry-instrumentation-fastapi>=0.46b0",
+    "opentelemetry-instrumentation-httpx>=0.46b0",
+    "opentelemetry-instrumentation-sqlalchemy>=0.46b0",
+]
+
+[tool.uv]
+# Runs from the monorepo namespace (services.erp); not shipped as a standalone wheel yet.
+package = false
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

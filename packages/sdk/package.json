@@ -1,0 +1,11 @@
+{
+  "name": "@moonwitness/sdk",
+  "version": "0.1.0",
+  "description": "Client SDK for Moonwitness Celestial Time Service",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@moonwitness/types": "workspace:*"
+  },
+  "license": "MIT"
+}

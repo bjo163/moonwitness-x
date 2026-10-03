@@ -1,0 +1,12 @@
+{
+  "name": "moonwitness-universe",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Moonwitness Universe Monorepo: Polyglot Operating System & Celestial Engine",
+  "packageManager": "pnpm@11.17.0",
+  "scripts": {
+    "dev:web": "pnpm --filter ./apps/web dev",
+    "build:web": "pnpm --filter ./apps/web build",
+    "lint:web": "pnpm --filter ./apps/web lint"
+  }
+}

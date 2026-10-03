@@ -1,0 +1,26 @@
+[package]
+name = "mts-daemon"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "MTS Standalone Daemon & CLI: Autonomous Celestial Time Service"
+
+[[bin]]
+name = "mts"
+path = "src/main.rs"
+
+[dependencies]
+mts-core = { path = "../../crates/mts-core" }
+mts-ephemeris = { path = "../../crates/mts-ephemeris" }
+mts-hijri = { path = "../../crates/mts-hijri" }
+mts-celcron = { path = "../../crates/mts-celcron" }
+clap = { workspace = true }
+tokio = { workspace = true }
+axum = { workspace = true }
+tower-http = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }

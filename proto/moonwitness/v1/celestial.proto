@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package moonwitness.v1;
+
+option go_package = "moonwitness/v1;moonwitnessv1";
+option csharp_namespace = "Moonwitness.V1";
+option java_package = "com.moonwitness.v1";
+
+// Layanan Telemetri & Observasi Hilal (Celestial Observation Service)
+service CelestialService {
+  rpc ListStations(ListStationsRequest) returns (ListStationsResponse);
+  rpc RecordObservation(RecordObservationRequest) returns (ObservationRecord);
+  rpc GetUpcomingEvents(GetUpcomingEventsRequest) returns (GetUpcomingEventsResponse);
+  rpc GetScriptureConcordances(GetScriptureConcordancesRequest) returns (GetScriptureConcordancesResponse);
+}
+
+message ListStationsRequest {
+  optional string country = 1;
+}
+
+message ListStationsResponse {
+  repeated ObservationStation stations = 1;
+}
+
+message ObservationStation {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  double latitude = 4;
+  double longitude = 5;
+  double elevation = 6;
+  string country = 7;
+  string city = 8;
+  bool is_active = 9;
+}
+
+message RecordObservationRequest {
+  string station_id = 1;
+  string observation_date_iso = 2;
+  double moon_altitude = 3;
+  double elongation = 4;
+  bool crescent_sighted = 5;
+  string optical_instrument = 6;
+  string observer_name = 7;
+  string notes = 8;
+}
+
+message ObservationRecord {
+  string id = 1;
+  string station_id = 2;
+  string observation_date_iso = 3;
+  double moon_altitude = 4;
+  double elongation = 5;
+  bool crescent_sighted = 6;
+  bool mabims_passed = 7;
+  bool wujudul_hilal_passed = 8;
+  string odeh_zone = 9;
+  string observer_name = 10;
+  bool verified = 11;
+}
+
+message GetUpcomingEventsRequest {
+  uint32 limit = 1;
+}
+
+message GetUpcomingEventsResponse {
+  repeated CelestialEventItem events = 1;
+}
+
+message CelestialEventItem {
+  string id = 1;
+  string event_type = 2;
+  string title = 3;
+  string event_date_utc = 4;
+  double julian_day = 5;
+  string description = 6;
+}
+
+message GetScriptureConcordancesRequest {
+  optional string scripture = 1; // "TAURAT", "ZABUR", "INJIL", "QURAN"
+}
+
+message GetScriptureConcordancesResponse {
+  repeated ScriptureConcordanceItem concordances = 1;
+}
+
+message ScriptureConcordanceItem {
+  string id = 1;
+  string scripture = 2;
+  string reference = 3;
+  string original_text = 4;
+  string translation = 5;
+  string cosmic_topic = 6;
+  string scientific_value = 7;
+  double correlation_ratio = 8;
+}

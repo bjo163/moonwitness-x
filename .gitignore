@@ -1,0 +1,105 @@
+# ==========================================
+# Moonwitness Celestial OS — Monorepo .gitignore
+# ==========================================
+
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+**/.vscode/*
+!**/.vscode/settings.json
+!**/.vscode/extensions.json
+!**/.vscode/launch.json
+!**/.vscode/*.code-snippets
+
+# Environment & Secret Files
+.env
+.env.*
+.env*.local
+!.env.example
+!.env.template
+*.pem
+*.key
+*.cert
+*.crt
+
+# Node.js & Web (pnpm / yarn / npm / Next.js)
+node_modules/
+**/node_modules/
+.pnpm-store/
+.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.next/
+**/apps/web/.next/
+out/
+build/
+dist/
+.turbo/
+.vercel/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Web specific generated icons
+apps/web/src/assets/iconify-icons/generated-icons.js
+apps/web/src/assets/iconify-icons/generated-icons.css
+
+# Rust & Cargo
+target/
+**/target/
+**/*.rs.bk
+*.pdb
+
+# Go Binaries & Build Outputs
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Python & UV / Virtual Environments
+.venv/
+**/.venv/
+venv/
+**/venv/
+env/
+**/env/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+**/.mypy_cache/
+.ruff_cache/
+**/.ruff_cache/
+*.egg-info/
+**/*.egg-info/
+
+# Databases & SQLite
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+
+# Workspace Builds & Temporary Files
+builds_workspace/
+tmp/
+temp/
+*.log

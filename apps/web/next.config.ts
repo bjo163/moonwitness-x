@@ -1,0 +1,30 @@
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  transpilePackages: ['@moonwitness/ui'],
+  basePath: process.env.BASEPATH,
+  redirects: async () => {
+    return [
+      {
+        source: '/',
+        destination: '/en/dashboards/crm',
+        permanent: true,
+        locale: false
+      },
+      {
+        source: '/:lang(en|fr|ar|id)',
+        destination: '/:lang/dashboards/crm',
+        permanent: true,
+        locale: false
+      },
+      {
+        source: '/:path((?!en|fr|ar|id|front-pages|images|api|favicon.ico).*)*',
+        destination: '/en/:path*',
+        permanent: true,
+        locale: false
+      }
+    ]
+  }
+}
+
+export default nextConfig

@@ -1,0 +1,67 @@
+// MUI Imports
+import { styled } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
+import InputAdornment from '@mui/material/InputAdornment'
+import type { TextFieldProps } from '@mui/material/TextField'
+
+// Third-party Imports
+import classnames from 'classnames'
+
+// Components Imports
+import CustomTextField from '@moonwitness/ui/text-field'
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
+
+// Styles imports
+import styles from './styles.module.css'
+
+// Styled TextField component
+const CustomTextFieldStyled = styled(CustomTextField)<TextFieldProps>(({ theme }) => ({
+  '& .MuiInputBase-root.MuiFilledInput-root': {
+    width: '100%',
+    backgroundColor: 'var(--mui-palette-background-paper) !important'
+  },
+  [theme.breakpoints.up('sm')]: {
+    width: '55%'
+  }
+}))
+
+type Props = {
+  searchValue: string
+  setSearchValue: (value: string) => void
+}
+
+const HelpCenterHeader = ({ searchValue, setSearchValue }: Props) => {
+  const t = useCommonTranslations()
+
+  return (
+    <section className={classnames('-mbs-[18%] sm:mbs-[-10%] lg:mbs-[-5%] md:mbs-[-8%]', styles.bgImage)}>
+      <div
+        className={classnames(
+          'flex flex-col gap-4 items-center text-center pbs-[150px] lg:pbs-[168px] pbe-[40px] sm:pbe-[100px] pli-5'
+        )}
+      >
+        <Typography variant='h4' color='primary.main'>
+          {t.helpHeaderTitle}
+        </Typography>
+        <CustomTextFieldStyled
+          className='is-full sm:max-is-[55%] md:max-is-[465px]'
+          placeholder={t.helpSearchPlaceholder}
+          value={searchValue}
+          onChange={e => setSearchValue(e.target.value)}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <i className='tabler-search' />
+                </InputAdornment>
+              )
+            }
+          }}
+        />
+        <Typography>{t.helpCommonTopics}</Typography>
+      </div>
+    </section>
+  )
+}
+
+export default HelpCenterHeader

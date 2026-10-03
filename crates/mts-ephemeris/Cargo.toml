@@ -1,0 +1,11 @@
+[package]
+name = "mts-ephemeris"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "High-precision analytical celestial ephemeris engine for Sun and Moon (VSOP87, ELP2000, Delta-T)"
+
+[dependencies]
+mts-core = { path = "../mts-core" }
+serde = { workspace = true }

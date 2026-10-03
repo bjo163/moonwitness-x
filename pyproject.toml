@@ -1,0 +1,10 @@
+[project]
+name = "moonwitness-universe"
+version = "0.1.0"
+description = "Moonwitness Universe Python Workspace"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv.workspace]
+members = ["services/analytics", "services/erp"]

@@ -1,0 +1,35 @@
+{
+  "name": "@moonwitness/ui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens": "./src/tokens/index.ts",
+    "./theme": "./src/theme/index.ts",
+    "./theme/types": "./src/theme/types.ts",
+    "./text-field": "./src/components/TextField.tsx",
+    "./avatar": "./src/components/Avatar.tsx",
+    "./chip": "./src/components/Chip.tsx"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/lab": "7.0.1-beta.19",
+    "@mui/material": "^7.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@types/react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3"
+  }
+}

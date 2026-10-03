@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package moonwitness.v1;
+
+option go_package = "moonwitness/v1;moonwitnessv1";
+option csharp_namespace = "Moonwitness.V1";
+option java_package = "com.moonwitness.v1";
+
+// Layanan Waktu Semesta & Jam Astronomis Sejati (Celestial Time Service)
+service TimeService {
+  // Ambil snapshot status jam langit TCC saat ini
+  rpc GetNow(GetNowRequest) returns (CelestialClockState);
+
+  // Ambil status Waktu Semesta (Cosmic Time Engine) & Asas Korelasi 4 Kitab
+  rpc GetCosmic(GetCosmicRequest) returns (CosmicTimeState);
+
+  // Cari waktu konjungsi geosentris (ijtimak) terdekat
+  rpc GetNextConjunction(GetNextConjunctionRequest) returns (ConjunctionEvent);
+
+  // Evaluasi visibilitas hilal berdasarkan koordinat geografis
+  rpc EvaluateHilal(EvaluateHilalRequest) returns (HilalVisibilityState);
+}
+
+message GetNowRequest {}
+
+message GetCosmicRequest {
+  optional double target_julian_day = 1;
+  optional string target_date_iso = 2;
+}
+
+message GetNextConjunctionRequest {
+  optional double start_julian_day = 1;
+}
+
+message EvaluateHilalRequest {
+  double latitude = 1;
+  double longitude = 2;
+  double elevation_meters = 3;
+}
+
+// Telemetri Jam Astronomis Sejati (True Celestial Clock)
+message CelestialClockState {
+  double julian_day_ut = 1;
+  string utc_timestamp = 2;
+  double elongation_degrees = 3;
+  double illuminated_fraction = 4;
+  string phase_name = 5;
+  string hijri_date = 6;
+  uint32 antikythera_metonic_month = 7;
+  uint32 antikythera_metonic_year = 8;
+  uint32 antikythera_saros_step = 9;
+  uint32 antikythera_exeligmos_shift_hours = 10;
+}
+
+// Telemetri Waktu Semesta & Kosmologi FLRW (Cosmic Time Engine)
+message CosmicTimeState {
+  double julian_day_earth = 1;
+  double age_of_universe_years = 2;
+  double total_cosmic_seconds = 3;
+  double age_of_earth_years = 4;
+  double earth_to_universe_ratio = 5;
+  double earth_kinematic_lag_years = 6;
+  string current_period = 7;
+  string period_scriptural_reference = 8;
+  double scale_factor_a = 9;
+  double redshift_z = 10;
+  double hubble_parameter_km_s_mpc = 11;
+  double cmb_temperature_kelvin = 12;
+  double epoch_period_duration_years = 13;
+  double divine_days_elapsed = 14;
+  double divine_night_watches_elapsed = 15;
+  double angelic_days_elapsed = 16;
+  double angelic_lorentz_gamma = 17;
+  double angelic_velocity_km_s = 18;
+  double derived_speed_of_light_m_s = 19;
+}
+
+// Data Deteksi Ijtimak (True Astronomical Conjunction)
+message ConjunctionEvent {
+  double conjunction_julian_day = 1;
+  string conjunction_utc = 2;
+  double days_remaining = 3;
+}
+
+// Data Status Keterlihatan Hilal (Hilal Visibility State)
+message HilalVisibilityState {
+  double latitude = 1;
+  double longitude = 2;
+  double elevation_meters = 3;
+  double topocentric_altitude = 4;
+  double elongation = 5;
+  bool is_mabims_passing = 6;
+  bool is_wujudul_hilal_passing = 7;
+  string note = 8;
+}

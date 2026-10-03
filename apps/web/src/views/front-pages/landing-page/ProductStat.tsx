@@ -1,0 +1,89 @@
+// React Imports
+import type { ReactNode } from 'react'
+
+// MUI Imports
+import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Grid'
+
+// SVG Imports
+import Check from '@assets/svg/front-pages/landing-page/Check'
+import User from '@assets/svg/front-pages/landing-page/User'
+import LaptopCharging from '@assets/svg/front-pages/landing-page/LaptopCharging'
+import Diamond from '@assets/svg/front-pages/landing-page/Diamond'
+
+// Styles Imports
+import frontCommonStyles from '@views/front-pages/styles.module.css'
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
+
+// Type
+type StatData = {
+  title: string
+  value: string
+  svg: ReactNode
+  color: string
+  isHover: boolean
+}
+
+// Data
+const statData: StatData[] = [
+  {
+    title: 'landingSupportTickets',
+    value: '7.1k+',
+    svg: <LaptopCharging color='var(--mui-palette-primary-main)' />,
+    color: 'var(--mui-palette-primary-darkerOpacity)',
+    isHover: false
+  },
+  {
+    title: 'landingCreativeCommunity',
+    value: '50k+',
+    svg: <User color='var(--mui-palette-success-main)' />,
+    color: 'var(--mui-palette-success-darkerOpacity)',
+    isHover: false
+  },
+  {
+    title: 'landingHighlyRated',
+    value: '4.8/5',
+    svg: <Diamond color='var(--mui-palette-info-main)' />,
+    color: 'var(--mui-palette-info-darkerOpacity)',
+    isHover: false
+  },
+  {
+    title: 'landingMoneyBack',
+    value: '100%',
+    svg: <Check color='var(--mui-palette-warning-main)' />,
+    color: 'var(--mui-palette-warning-darkerOpacity)',
+    isHover: false
+  }
+]
+
+const ProductStat = () => {
+  const t = useCommonTranslations()
+  return (
+    <section className='plb-[84px] bg-backgroundPaper'>
+      <div className={frontCommonStyles.layoutSpacing}>
+        <Grid container spacing={6}>
+          {statData.map((stat, index) => (
+            <Grid key={index} size={{ xs: 12, sm: 6, md: 3 }}>
+              <div
+                className='flex flex-col items-center justify-center gap-y-4 border p-6 rounded'
+                style={{
+                  borderColor: stat.color
+                }}
+              >
+                {stat.svg}
+                <div className='text-center'>
+                  <Typography variant='h3' className='font-medium'>
+                    {stat.value}
+                  </Typography>
+                  <Typography className='font-medium'>{t[stat.title as keyof typeof t]}</Typography>
+                </div>
+              </div>
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+    </section>
+  )
+}
+
+export default ProductStat
