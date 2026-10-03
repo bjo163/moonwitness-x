@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useId } from 'react'
+
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -17,6 +18,8 @@ import InputLabel from '@mui/material/InputLabel'
 import CustomAvatar from '@moonwitness/ui/avatar'
 import CustomChip from '@moonwitness/ui/chip'
 import CustomTextField from '@moonwitness/ui/text-field'
+
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
 
 interface PrayerData {
   latitude: number
@@ -49,15 +52,16 @@ interface PrayerData {
 }
 
 const PRESET_STATIONS = [
-  { name: 'Bosscha Observatory, Lembang', lat: '-6.8252', lon: '107.6169', elev: '1310' },
-  { name: 'Timau National Observatory, NTT', lat: '-9.5833', lon: '123.9500', elev: '1300' },
-  { name: 'Cibeas Observation Station, Sukabumi', lat: '-7.0125', lon: '106.5417', elev: '45' },
-  { name: 'Makkah Clock Tower, Saudi Arabia', lat: '21.4225', lon: '39.8262', elev: '601' },
-  { name: 'Monas, DKI Jakarta', lat: '-6.1754', lon: '106.8272', elev: '8' },
-  { name: 'Royal Observatory Greenwich, UK', lat: '51.4769', lon: '-0.0005', elev: '46' }
-]
+  { nameKey: 'prayerStationBosscha', lat: '-6.8252', lon: '107.6169', elev: '1310' },
+  { nameKey: 'prayerStationTimau', lat: '-9.5833', lon: '123.9500', elev: '1300' },
+  { nameKey: 'prayerStationCibeas', lat: '-7.0125', lon: '106.5417', elev: '45' },
+  { nameKey: 'prayerStationMakkah', lat: '21.4225', lon: '39.8262', elev: '601' },
+  { nameKey: 'prayerStationMonas', lat: '-6.1754', lon: '106.8272', elev: '8' },
+  { nameKey: 'prayerStationGreenwich', lat: '51.4769', lon: '-0.0005', elev: '46' }
+] as const
 
 export default function PrayerAndQiblaCard() {
+  const t = useCommonTranslations()
   const [selectedStation, setSelectedStation] = useState(0)
   const [lat, setLat] = useState('-6.8252')
   const [lon, setLon] = useState('107.6169')
@@ -66,15 +70,32 @@ export default function PrayerAndQiblaCard() {
   const [data, setData] = useState<PrayerData | null>(null)
   const [countdownSecs, setCountdownSecs] = useState<number>(0)
   const compassGradId = useId()
+  const stationSelectId = useId()
+
+  const translatePrayerName = (name: string) => {
+    const normalized = name.toLowerCase()
+
+    if (normalized.includes('subuh') || normalized.includes('fajr')) return t.prayerFajr
+    if (normalized.includes('syuruq') || normalized.includes('sunrise')) return t.prayerSunrise
+    if (normalized.includes('dzuhur') || normalized.includes('dhuhr')) return t.prayerDhuhr
+    if (normalized.includes('ashar') || normalized.includes('asr')) return t.prayerAsr
+    if (normalized.includes('maghrib')) return t.prayerMaghrib
+    if (normalized.includes('isya') || normalized.includes('isha')) return t.prayerIsha
+
+    return name
+  }
 
   const fetchPrayerData = async (latitude = lat, longitude = lon, elevation = elev) => {
     setLoading(true)
+
     try {
       const res = await fetch(
         `/api/apps/celestial?endpoint=time/prayer-times&lat=${latitude}&lon=${longitude}&elevation=${elevation}`
       )
+
       if (res.ok) {
         const json: PrayerData = await res.json()
+
         setData(json)
         setCountdownSecs(Math.floor(json.seconds_to_next_prayer))
       }
@@ -95,17 +116,21 @@ export default function PrayerAndQiblaCard() {
       setCountdownSecs(prev => {
         if (prev <= 1) {
           fetchPrayerData(lat, lon, elev)
+
           return 0
         }
+
         return prev - 1
       })
     }, 1000)
+
     return () => clearInterval(timer)
   }, [lat, lon, elev])
 
   const handleStationChange = (idx: number) => {
     setSelectedStation(idx)
     const st = PRESET_STATIONS[idx]
+
     setLat(st.lat)
     setLon(st.lon)
     setElev(st.elev)
@@ -116,14 +141,18 @@ export default function PrayerAndQiblaCard() {
     const h = Math.floor(totalSecs / 3600)
     const m = Math.floor((totalSecs % 3600) / 60)
     const s = totalSecs % 60
+
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
   }
 
   const formatTime = (utcIso: string, offsetHours: number) => {
     if (!utcIso) return '--:--'
+
     try {
       const d = new Date(utcIso)
+
       if (isNaN(d.getTime())) return '--:--'
+
       // Offset manual sesuai stasiun
       const utcMs = d.getTime()
       const localMs = utcMs + offsetHours * 3600 * 1000
@@ -131,6 +160,7 @@ export default function PrayerAndQiblaCard() {
       const hh = localDate.getUTCHours().toString().padStart(2, '0')
       const mm = localDate.getUTCMinutes().toString().padStart(2, '0')
       const ss = localDate.getUTCSeconds().toString().padStart(2, '0')
+
       return `${hh}:${mm}:${ss}`
     } catch {
       return '--:--'
@@ -143,60 +173,75 @@ export default function PrayerAndQiblaCard() {
   // Prayer list for table
   const prayerRows = data
     ? [
-        { name: 'Imsak', time: formatTime(data.imsak_utc, tz), sub: '10 mnt sblm Subuh', isNext: false, isNow: false },
         {
-          name: 'Subuh (Fajr)',
-          time: formatTime(data.fajr_utc, tz),
-          sub: 'h = -20.0° MABIMS',
-          isNext: data.next_prayer.includes('Subuh'),
-          isNow: data.active_prayer.includes('Subuh')
-        },
-        {
-          name: 'Syuruq (Sunrise)',
-          time: formatTime(data.sunrise_utc, tz),
-          sub: 'Terbit Matahari',
-          isNext: data.next_prayer.includes('Syuruq'),
-          isNow: data.active_prayer.includes('Syuruq')
-        },
-        {
-          name: 'Dzuhur (Dhuhr)',
-          time: formatTime(data.dhuhr_utc, tz),
-          sub: 'Zawwal + 2m ihtiyat',
-          isNext: data.next_prayer.includes('Dzuhur'),
-          isNow: data.active_prayer.includes('Dzuhur')
-        },
-        {
-          name: 'Ashar (Asr)',
-          time: formatTime(data.asr_utc, tz),
-          sub: 'Bayangan 1:1 + 2m',
-          isNext: data.next_prayer.includes('Ashar'),
-          isNow: data.active_prayer.includes('Ashar')
-        },
-        {
-          name: 'Maghrib (Sunset)',
-          time: formatTime(data.maghrib_utc, tz),
-          sub: 'Ghurub + 2m ihtiyat',
-          isNext: data.next_prayer.includes('Maghrib'),
-          isNow: data.active_prayer.includes('Maghrib')
-        },
-        {
-          name: 'Isya (Isha)',
-          time: formatTime(data.isha_utc, tz),
-          sub: 'h = -18.0° MABIMS',
-          isNext: data.next_prayer.includes('Isya'),
-          isNow: data.active_prayer.includes('Isya')
-        },
-        {
-          name: 'Nisf al-Layl',
-          time: formatTime(data.midnight_utc, tz),
-          sub: 'Tengah Malam Astronomis',
+          name: t.prayerImsak,
+          match: 'Imsak',
+          time: formatTime(data.imsak_utc, tz),
+          sub: t.prayerBeforeFajr,
           isNext: false,
           isNow: false
         },
         {
-          name: 'Sepertiga Malam',
+          name: t.prayerFajr,
+          match: 'Subuh',
+          time: formatTime(data.fajr_utc, tz),
+          sub: t.prayerFajrRule,
+          isNext: data.next_prayer.includes('Subuh'),
+          isNow: data.active_prayer.includes('Subuh')
+        },
+        {
+          name: t.prayerSunrise,
+          match: 'Syuruq',
+          time: formatTime(data.sunrise_utc, tz),
+          sub: t.prayerSunriseRule,
+          isNext: data.next_prayer.includes('Syuruq'),
+          isNow: data.active_prayer.includes('Syuruq')
+        },
+        {
+          name: t.prayerDhuhr,
+          match: 'Dzuhur',
+          time: formatTime(data.dhuhr_utc, tz),
+          sub: t.prayerDhuhrRule,
+          isNext: data.next_prayer.includes('Dzuhur'),
+          isNow: data.active_prayer.includes('Dzuhur')
+        },
+        {
+          name: t.prayerAsr,
+          match: 'Ashar',
+          time: formatTime(data.asr_utc, tz),
+          sub: t.prayerAsrRule,
+          isNext: data.next_prayer.includes('Ashar'),
+          isNow: data.active_prayer.includes('Ashar')
+        },
+        {
+          name: t.prayerMaghrib,
+          match: 'Maghrib',
+          time: formatTime(data.maghrib_utc, tz),
+          sub: t.prayerMaghribRule,
+          isNext: data.next_prayer.includes('Maghrib'),
+          isNow: data.active_prayer.includes('Maghrib')
+        },
+        {
+          name: t.prayerIsha,
+          match: 'Isya',
+          time: formatTime(data.isha_utc, tz),
+          sub: t.prayerIshaRule,
+          isNext: data.next_prayer.includes('Isya'),
+          isNow: data.active_prayer.includes('Isya')
+        },
+        {
+          name: t.prayerMidnight,
+          match: 'Nisf al-Layl',
+          time: formatTime(data.midnight_utc, tz),
+          sub: t.prayerMidnightRule,
+          isNext: false,
+          isNow: false
+        },
+        {
+          name: t.prayerLastThird,
+          match: 'Sepertiga Malam',
           time: formatTime(data.last_third_utc, tz),
-          sub: 'Waktu Sahur / Tahajjud',
+          sub: t.prayerLastThirdRule,
           isNext: false,
           isNow: false
         }
@@ -208,11 +253,9 @@ export default function PrayerAndQiblaCard() {
       <CardHeader
         title={
           <div className='flex items-center gap-2 flex-wrap'>
-            <span className='font-bold text-lg text-[var(--mui-palette-text-primary)]'>
-              Jadwal Shalat Astronomis & Kompas Kiblat Presisi
-            </span>
+            <span className='font-bold text-lg text-[var(--mui-palette-text-primary)]'>{t.prayerCardTitle}</span>
             <CustomChip
-              label={data ? `${data.active_prayer} Aktif` : 'Menghitung...'}
+              label={data ? `${translatePrayerName(data.active_prayer)} ${t.prayerActive}` : t.prayerCalculating}
               color='success'
               skin='light'
               size='small'
@@ -221,11 +264,11 @@ export default function PrayerAndQiblaCard() {
             />
           </div>
         }
-        subheader={`Komputasi sferis toposentrik & lintas lingkaran geodesi Ka'bah (${tzLabel})`}
+        subheader={`${t.prayerCalculationDescription} (${tzLabel})`}
         action={
           <div className='flex items-center gap-2'>
             <CustomChip
-              label='VSOP87 + Vincenty'
+              label={t.prayerPrecisionMethod}
               color='primary'
               skin='light'
               size='small'
@@ -241,16 +284,16 @@ export default function PrayerAndQiblaCard() {
           <Grid container spacing={3} alignItems='center'>
             <Grid size={{ xs: 12, md: 5 }}>
               <FormControl fullWidth size='small'>
-                <InputLabel id='station-select-label'>Pilih Stasiun Pengamatan</InputLabel>
+                <InputLabel id={stationSelectId}>{t.prayerSelectStation}</InputLabel>
                 <Select
-                  labelId='station-select-label'
+                  labelId={stationSelectId}
                   value={selectedStation}
-                  label='Pilih Stasiun Pengamatan'
+                  label={t.prayerSelectStation}
                   onChange={e => handleStationChange(Number(e.target.value))}
                 >
                   {PRESET_STATIONS.map((st, i) => (
                     <MenuItem key={i} value={i}>
-                      {st.name}
+                      {t[st.nameKey]}
                     </MenuItem>
                   ))}
                 </Select>
@@ -260,7 +303,7 @@ export default function PrayerAndQiblaCard() {
               <CustomTextField
                 fullWidth
                 size='small'
-                label='Latitude (°)'
+                label={t.prayerLatitude}
                 value={lat}
                 onChange={e => setLat(e.target.value)}
               />
@@ -269,7 +312,7 @@ export default function PrayerAndQiblaCard() {
               <CustomTextField
                 fullWidth
                 size='small'
-                label='Longitude (°)'
+                label={t.prayerLongitude}
                 value={lon}
                 onChange={e => setLon(e.target.value)}
               />
@@ -278,7 +321,7 @@ export default function PrayerAndQiblaCard() {
               <CustomTextField
                 fullWidth
                 size='small'
-                label='Elev (m)'
+                label={t.prayerElevation}
                 value={elev}
                 onChange={e => setElev(e.target.value)}
               />
@@ -308,25 +351,33 @@ export default function PrayerAndQiblaCard() {
               </div>
               <div className='flex items-center justify-between flex-wrap gap-4'>
                 <div>
-                  <Typography variant='caption' className='text-emerald-400 font-semibold uppercase tracking-wider block mb-1'>
-                    Shalat Berikutnya
+                  <Typography
+                    variant='caption'
+                    className='text-emerald-400 font-semibold uppercase tracking-wider block mb-1'
+                  >
+                    {t.prayerNextPrayer}
                   </Typography>
                   <Typography variant='h4' className='font-black text-white flex items-center gap-2'>
-                    {data?.next_prayer || 'Memuat...'}
+                    {data?.next_prayer ? translatePrayerName(data.next_prayer) : t.prayerLoading}
                   </Typography>
                   <Typography variant='caption' className='text-slate-300 block mt-1'>
-                    Waktu Saat Ini: <span className='font-mono font-bold text-emerald-300'>{data?.local_time || '--:--'}</span> ({tzLabel})
+                    {t.prayerCurrentTime}:{' '}
+                    <span className='font-mono font-bold text-emerald-300'>{data?.local_time || '--:--'}</span> (
+                    {tzLabel})
                   </Typography>
                 </div>
                 <div className='text-right'>
-                  <Typography variant='caption' className='text-slate-300 font-semibold uppercase tracking-wider block mb-1'>
-                    Hitung Mundur Adzan
+                  <Typography
+                    variant='caption'
+                    className='text-slate-300 font-semibold uppercase tracking-wider block mb-1'
+                  >
+                    {t.prayerCallToPrayerCountdown}
                   </Typography>
                   <Typography variant='h3' className='font-black font-mono tracking-tight text-emerald-300'>
                     {formatCountdown(countdownSecs)}
                   </Typography>
                   <Typography variant='caption' className='text-slate-400 text-xs block mt-1'>
-                    Presisi toleransi: ±0.1 detik
+                    {t.prayerTolerance}
                   </Typography>
                 </div>
               </div>
@@ -348,10 +399,10 @@ export default function PrayerAndQiblaCard() {
             <div className='border rounded-xl border-[var(--mui-palette-divider)] overflow-hidden'>
               <div className='bg-[var(--mui-palette-action-hover)] px-4 py-2.5 border-b border-[var(--mui-palette-divider)] flex items-center justify-between'>
                 <Typography variant='subtitle2' className='font-bold uppercase tracking-wider text-xs'>
-                  Jadwal Waktu Shalat Hari Ini ({data?.utc_date || ''})
+                  {t.prayerTodaySchedule} ({data?.utc_date || ''})
                 </Typography>
                 <Typography variant='caption' color='text.secondary'>
-                  Standar MABIMS / Kemenag RI (+2m Ihtiyat)
+                  {t.prayerStandard}
                 </Typography>
               </div>
               <div className='divide-y divide-[var(--mui-palette-divider)]'>
@@ -362,8 +413,8 @@ export default function PrayerAndQiblaCard() {
                       row.isNow
                         ? 'bg-emerald-500/15 font-bold border-l-4 border-l-emerald-500'
                         : row.isNext
-                        ? 'bg-blue-500/10 border-l-4 border-l-blue-500'
-                        : 'hover:bg-[var(--mui-palette-action-hover)]'
+                          ? 'bg-blue-500/10 border-l-4 border-l-blue-500'
+                          : 'hover:bg-[var(--mui-palette-action-hover)]'
                     }`}
                   >
                     <div className='flex items-center gap-3'>
@@ -375,17 +426,17 @@ export default function PrayerAndQiblaCard() {
                       >
                         <i
                           className={`${
-                            row.name.includes('Subuh') || row.name.includes('Imsak')
+                            row.match.includes('Subuh') || row.match.includes('Imsak')
                               ? 'tabler-sun-high'
-                              : row.name.includes('Syuruq')
-                              ? 'tabler-sunrise'
-                              : row.name.includes('Dzuhur')
-                              ? 'tabler-sun'
-                              : row.name.includes('Ashar')
-                              ? 'tabler-sunset'
-                              : row.name.includes('Maghrib')
-                              ? 'tabler-moon'
-                              : 'tabler-stars'
+                              : row.match.includes('Syuruq')
+                                ? 'tabler-sunrise'
+                                : row.match.includes('Dzuhur')
+                                  ? 'tabler-sun'
+                                  : row.match.includes('Ashar')
+                                    ? 'tabler-sunset'
+                                    : row.match.includes('Maghrib')
+                                      ? 'tabler-moon'
+                                      : 'tabler-stars'
                           } text-[18px]`}
                         />
                       </CustomAvatar>
@@ -404,12 +455,12 @@ export default function PrayerAndQiblaCard() {
                       </Typography>
                       {row.isNow && (
                         <span className='inline-block text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400'>
-                          Sedang Berlangsung
+                          {t.prayerHappeningNow}
                         </span>
                       )}
                       {row.isNext && (
                         <span className='inline-block text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400'>
-                          Selanjutnya
+                          {t.prayerUpNext}
                         </span>
                       )}
                     </div>
@@ -422,15 +473,18 @@ export default function PrayerAndQiblaCard() {
           {/* Kolom Kanan: High-Precision Qibla Compass & Solar Telemetry */}
           <Grid size={{ xs: 12, lg: 5 }}>
             <div className='border rounded-2xl border-[var(--mui-palette-divider)] p-5 bg-[var(--mui-palette-background-paper)] flex flex-col items-center justify-center text-center shadow-md'>
-              <Typography variant='subtitle2' className='font-bold uppercase tracking-wider text-xs mb-1 text-slate-400'>
-                Arah Kiblat Menuju Ka'bah (Makkah)
+              <Typography
+                variant='subtitle2'
+                className='font-bold uppercase tracking-wider text-xs mb-1 text-slate-400'
+              >
+                {t.prayerQiblaDirection}
               </Typography>
               <Typography variant='h5' className='font-black text-[var(--mui-palette-text-primary)]'>
                 {data ? `${data.qibla_bearing_deg}°` : '--°'}{' '}
                 <span className='text-sm font-semibold text-emerald-500'>({data?.qibla_cardinal})</span>
               </Typography>
               <Typography variant='caption' color='text.secondary' className='mb-4 block'>
-                {data ? `${data.qibla_west_offset_deg}° dari Barat ke Utara (Offset Geodesi)` : ''}
+                {data ? `${data.qibla_west_offset_deg}° ${t.prayerWestNorthOffset}` : ''}
               </Typography>
 
               {/* Interactive SVG Compass Dial */}
@@ -446,7 +500,15 @@ export default function PrayerAndQiblaCard() {
 
                   {/* Outer Brass Ring */}
                   <circle cx='130' cy='130' r='120' fill='#0f172a' stroke={`url(#${compassGradId})`} strokeWidth='4' />
-                  <circle cx='130' cy='130' r='112' fill='none' stroke='#334155' strokeWidth='1' strokeDasharray='2 4' />
+                  <circle
+                    cx='130'
+                    cy='130'
+                    r='112'
+                    fill='none'
+                    stroke='#334155'
+                    strokeWidth='1'
+                    strokeDasharray='2 4'
+                  />
 
                   {/* 16 Cardinal Ticks */}
                   {Array.from({ length: 16 }).map((_, i) => {
@@ -459,6 +521,7 @@ export default function PrayerAndQiblaCard() {
                     const y1 = 130 - rInner * Math.cos(rad)
                     const x2 = 130 + rOuter * Math.sin(rad)
                     const y2 = 130 - rOuter * Math.cos(rad)
+
                     return (
                       <line
                         key={i}
@@ -474,23 +537,31 @@ export default function PrayerAndQiblaCard() {
 
                   {/* Cardinal Labels */}
                   <text x='130' y='32' textAnchor='middle' fill='#ef4444' fontSize='12' fontWeight='bold'>
-                    U (0°)
+                    {t.prayerNorth} (0°)
                   </text>
                   <text x='234' y='134' textAnchor='middle' fill='#94a3b8' fontSize='11' fontWeight='bold'>
-                    T (90°)
+                    {t.prayerEast} (90°)
                   </text>
                   <text x='130' y='238' textAnchor='middle' fill='#94a3b8' fontSize='11' fontWeight='bold'>
-                    S (180°)
+                    {t.prayerSouth} (180°)
                   </text>
                   <text x='26' y='134' textAnchor='middle' fill='#94a3b8' fontSize='11' fontWeight='bold'>
-                    B (270°)
+                    {t.prayerWest} (270°)
                   </text>
 
                   {/* Sun Azimuth Marker if above horizon */}
                   {data && data.solar_altitude_deg > 0 && (
                     <g transform={`rotate(${data.solar_azimuth_deg}, 130, 130)`}>
                       <circle cx='130' cy='36' r='6' fill='#fbbf24' stroke='#f59e0b' strokeWidth='2' />
-                      <line x1='130' y1='42' x2='130' y2='65' stroke='#fbbf24' strokeWidth='1.5' strokeDasharray='2 2' />
+                      <line
+                        x1='130'
+                        y1='42'
+                        x2='130'
+                        y2='65'
+                        stroke='#fbbf24'
+                        strokeWidth='1.5'
+                        strokeDasharray='2 2'
+                      />
                     </g>
                   )}
 
@@ -501,7 +572,16 @@ export default function PrayerAndQiblaCard() {
                     {/* Counter needle */}
                     <polygon points='130,226 136,130 124,130' fill='#475569' stroke='#334155' strokeWidth='1' />
                     {/* Ka'bah icon at tip */}
-                    <rect x='124' y='14' width='12' height='12' rx='2' fill='#d97706' stroke='#ffffff' strokeWidth='1' />
+                    <rect
+                      x='124'
+                      y='14'
+                      width='12'
+                      height='12'
+                      rx='2'
+                      fill='#d97706'
+                      stroke='#ffffff'
+                      strokeWidth='1'
+                    />
                   </g>
 
                   {/* Center Brass Hub */}
@@ -514,18 +594,18 @@ export default function PrayerAndQiblaCard() {
               <div className='w-full grid grid-cols-2 gap-3 mt-4'>
                 <div className='p-3 bg-[var(--mui-palette-action-hover)] rounded-xl border border-[var(--mui-palette-divider)]'>
                   <Typography variant='caption' color='text.secondary' className='block font-semibold'>
-                    Jarak ke Ka'bah
+                    {t.prayerDistanceToKaaba}
                   </Typography>
                   <Typography variant='subtitle1' className='font-black text-emerald-500 font-mono'>
-                    {data ? `${data.qibla_distance_km.toLocaleString()} km` : '--'}
+                    {data ? `${data.qibla_distance_km.toLocaleString()} ${t.prayerKilometers}` : '--'}
                   </Typography>
                 </div>
                 <div className='p-3 bg-[var(--mui-palette-action-hover)] rounded-xl border border-[var(--mui-palette-divider)]'>
                   <Typography variant='caption' color='text.secondary' className='block font-semibold'>
-                    Koordinat Ka'bah
+                    {t.prayerKaabaCoordinates}
                   </Typography>
                   <Typography variant='subtitle2' className='font-mono font-bold'>
-                    21.42° N, 39.83° E
+                    {t.prayerKaabaCoordinateValue}
                   </Typography>
                 </div>
               </div>
@@ -534,13 +614,16 @@ export default function PrayerAndQiblaCard() {
 
               {/* Live Solar Position & Shadow Ratio */}
               <div className='w-full'>
-                <Typography variant='caption' className='text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-2'>
-                  Telemetri Posisi Matahari Saat Ini
+                <Typography
+                  variant='caption'
+                  className='text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-2'
+                >
+                  {t.prayerSolarTelemetry}
                 </Typography>
                 <div className='grid grid-cols-3 gap-2 text-center'>
                   <div className='p-2 bg-[var(--mui-palette-action-hover)] rounded-lg'>
                     <Typography variant='caption' color='text.secondary' className='text-[10px] block font-semibold'>
-                      Altitude (Tinggi)
+                      {t.prayerAltitude}
                     </Typography>
                     <Typography variant='body2' className='font-bold font-mono text-amber-500'>
                       {data ? `${data.solar_altitude_deg}°` : '--'}
@@ -548,7 +631,7 @@ export default function PrayerAndQiblaCard() {
                   </div>
                   <div className='p-2 bg-[var(--mui-palette-action-hover)] rounded-lg'>
                     <Typography variant='caption' color='text.secondary' className='text-[10px] block font-semibold'>
-                      Azimuth (Arah)
+                      {t.prayerAzimuth}
                     </Typography>
                     <Typography variant='body2' className='font-bold font-mono'>
                       {data ? `${data.solar_azimuth_deg}°` : '--'}
@@ -556,10 +639,10 @@ export default function PrayerAndQiblaCard() {
                   </div>
                   <div className='p-2 bg-[var(--mui-palette-action-hover)] rounded-lg'>
                     <Typography variant='caption' color='text.secondary' className='text-[10px] block font-semibold'>
-                      Rasio Bayangan
+                      {t.prayerShadowRatio}
                     </Typography>
                     <Typography variant='body2' className='font-bold font-mono text-teal-400'>
-                      {data ? `${data.shadow_ratio}x` : '--'}
+                      {data ? `${data.shadow_ratio}${t.prayerTimes}` : '--'}
                     </Typography>
                   </div>
                 </div>

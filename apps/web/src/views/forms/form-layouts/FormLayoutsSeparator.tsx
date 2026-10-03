@@ -19,6 +19,8 @@ import IconButton from '@mui/material/IconButton'
 // Components Imports
 import CustomTextField from '@moonwitness/ui/text-field'
 
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
+
 // Styled Component Imports
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 
@@ -38,6 +40,8 @@ type FormDataType = {
 }
 
 const FormLayoutsSeparator = () => {
+  const t = useCommonTranslations()
+
   // States
   const [formData, setFormData] = useState<FormDataType>({
     username: '',
@@ -78,21 +82,21 @@ const FormLayoutsSeparator = () => {
 
   return (
     <Card>
-      <CardHeader title='Multi Column with Form Separator' />
+      <CardHeader title={t.formSeparatorTitle} />
       <Divider />
       <form onSubmit={e => e.preventDefault()}>
         <CardContent>
           <Grid container spacing={6}>
             <Grid size={{ xs: 12 }}>
               <Typography variant='body2' className='font-medium'>
-                1. Account Details
+                {t.formSectionAccountDetails}
               </Typography>
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='UserName'
-                placeholder='johnDoe '
+                label={t.wizardUsername}
+                placeholder={t.wizardUsernamePlaceholder}
                 value={formData.username}
                 onChange={e => setFormData({ ...formData, username: e.target.value })}
               />
@@ -101,17 +105,17 @@ const FormLayoutsSeparator = () => {
               <CustomTextField
                 fullWidth
                 type='email'
-                label='Email'
+                label={t.wizardEmail}
                 value={formData.email}
-                placeholder='johndoe@gmail.com'
+                placeholder={t.wizardEmailPlaceholder}
                 onChange={e => setFormData({ ...formData, email: e.target.value })}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Password'
-                placeholder='············'
+                label={t.wizardPassword}
+                placeholder={t.wizardPasswordPlaceholder}
                 id='form-layout-separator-password'
                 type={formData.isPasswordShown ? 'text' : 'password'}
                 value={formData.password}
@@ -124,7 +128,7 @@ const FormLayoutsSeparator = () => {
                           edge='end'
                           onClick={handleClickShowPassword}
                           onMouseDown={e => e.preventDefault()}
-                          aria-label='toggle password visibility'
+                          aria-label={t.wizardTogglePasswordVisibility}
                         >
                           <i className={formData.isPasswordShown ? 'tabler-eye-off' : 'tabler-eye'} />
                         </IconButton>
@@ -137,8 +141,8 @@ const FormLayoutsSeparator = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Confirm Password'
-                placeholder='············'
+                label={t.wizardConfirmPassword}
+                placeholder={t.wizardPasswordPlaceholder}
                 id='form-layout-separator-confirm-password'
                 type={formData.isConfirmPasswordShown ? 'text' : 'password'}
                 value={formData.confirmPassword}
@@ -151,7 +155,7 @@ const FormLayoutsSeparator = () => {
                           edge='end'
                           onClick={handleClickShowConfirmPassword}
                           onMouseDown={e => e.preventDefault()}
-                          aria-label='toggle confirm password visibility'
+                          aria-label={t.wizardToggleConfirmPasswordVisibility}
                         >
                           <i className={formData.isConfirmPasswordShown ? 'tabler-eye-off' : 'tabler-eye'} />
                         </IconButton>
@@ -166,14 +170,14 @@ const FormLayoutsSeparator = () => {
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Typography variant='body2' className='font-medium'>
-                2. Personal Info
+                {t.formSectionPersonalInfo}
               </Typography>
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='First Name'
-                placeholder='John'
+                label={t.wizardFirstName}
+                placeholder={t.wizardFirstNamePlaceholder}
                 value={formData.firstName}
                 onChange={e => setFormData({ ...formData, firstName: e.target.value })}
               />
@@ -181,8 +185,8 @@ const FormLayoutsSeparator = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Last Name'
-                placeholder='Doe'
+                label={t.wizardLastName}
+                placeholder={t.wizardLastNamePlaceholder}
                 value={formData.lastName}
                 onChange={e => setFormData({ ...formData, lastName: e.target.value })}
               />
@@ -191,22 +195,22 @@ const FormLayoutsSeparator = () => {
               <CustomTextField
                 select
                 fullWidth
-                label='Country'
+                label={t.wizardCountry}
                 value={formData.country}
                 onChange={e => setFormData({ ...formData, country: e.target.value })}
               >
-                <MenuItem value=''>Select Country</MenuItem>
-                <MenuItem value='UK'>UK</MenuItem>
-                <MenuItem value='USA'>USA</MenuItem>
-                <MenuItem value='Australia'>Australia</MenuItem>
-                <MenuItem value='Germany'>Germany</MenuItem>
+                <MenuItem value=''>{t.formSelectCountry}</MenuItem>
+                <MenuItem value='UK'>{t.wizardCountryUk}</MenuItem>
+                <MenuItem value='USA'>{t.wizardCountryUsa}</MenuItem>
+                <MenuItem value='Australia'>{t.wizardCountryAustralia}</MenuItem>
+                <MenuItem value='Germany'>{t.wizardCountryGermany}</MenuItem>
               </CustomTextField>
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 select
                 fullWidth
-                label='Language'
+                label={t.wizardLanguage}
                 value={formData.language}
                 slotProps={{
                   select: {
@@ -215,13 +219,13 @@ const FormLayoutsSeparator = () => {
                   }
                 }}
               >
-                <MenuItem value='English'>English</MenuItem>
-                <MenuItem value='French'>French</MenuItem>
-                <MenuItem value='Spanish'>Spanish</MenuItem>
-                <MenuItem value='Portuguese'>Portuguese</MenuItem>
-                <MenuItem value='Italian'>Italian</MenuItem>
-                <MenuItem value='German'>German</MenuItem>
-                <MenuItem value='Arabic'>Arabic</MenuItem>
+                <MenuItem value='English'>{t.wizardLanguageEnglish}</MenuItem>
+                <MenuItem value='French'>{t.wizardLanguageFrench}</MenuItem>
+                <MenuItem value='Spanish'>{t.wizardLanguageSpanish}</MenuItem>
+                <MenuItem value='Portuguese'>{t.wizardLanguagePortuguese}</MenuItem>
+                <MenuItem value='Italian'>{t.wizardLanguageItalian}</MenuItem>
+                <MenuItem value='German'>{t.wizardLanguageGerman}</MenuItem>
+                <MenuItem value='Arabic'>{t.wizardLanguageArabic}</MenuItem>
               </CustomTextField>
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -230,16 +234,18 @@ const FormLayoutsSeparator = () => {
                 showYearDropdown
                 showMonthDropdown
                 onChange={(date: Date | null) => setFormData({ ...formData, date })}
-                placeholderText='MM/DD/YYYY'
-                customInput={<CustomTextField fullWidth label='Birth Date' placeholder='MM-DD-YYYY' />}
+                placeholderText={t.formDatePlaceholder}
+                customInput={
+                  <CustomTextField fullWidth label={t.formBirthDate} placeholder={t.formDateInputPlaceholder} />
+                }
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Phone Number'
+                label={t.formPhoneNumber}
                 type='number'
-                placeholder='123-456-7890'
+                placeholder={t.formPhonePlaceholder}
                 value={formData.phoneNumber}
                 onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })}
               />
@@ -249,7 +255,7 @@ const FormLayoutsSeparator = () => {
         <Divider />
         <CardActions>
           <Button type='submit' variant='contained' className='mie-2'>
-            Submit
+            {t.commonSubmit}
           </Button>
           <Button
             type='reset'
@@ -259,7 +265,7 @@ const FormLayoutsSeparator = () => {
               handleReset()
             }}
           >
-            Reset
+            {t.commonReset}
           </Button>
         </CardActions>
       </form>

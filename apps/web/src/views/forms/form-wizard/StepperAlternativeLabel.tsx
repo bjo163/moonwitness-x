@@ -20,8 +20,10 @@ import IconButton from '@mui/material/IconButton'
 import { toast } from 'react-toastify'
 
 // Component Imports
-import DirectionalIcon from '@components/DirectionalIcon'
 import CustomTextField from '@moonwitness/ui/text-field'
+
+import DirectionalIcon from '@components/DirectionalIcon'
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
 
 // Styled Component Imports
 import StepperWrapper from '@core/styles/stepper'
@@ -44,23 +46,15 @@ type FormDataType = {
   github: string
 }
 
-// Vars
-const steps = [
-  {
-    title: 'Account Details',
-    subtitle: 'Enter your account details'
-  },
-  {
-    title: 'Personal Info',
-    subtitle: 'Setup Information'
-  },
-  {
-    title: 'Social Links',
-    subtitle: 'Add Social Links'
-  }
-]
-
 const StepperAlternativeLabel = () => {
+  const t = useCommonTranslations()
+
+  const steps = [
+    { title: t.wizardAccountDetails, subtitle: t.wizardAccountDetailsSubtitle },
+    { title: t.wizardPersonalInfo, subtitle: t.wizardPersonalInfoSubtitle },
+    { title: t.wizardSocialLinks, subtitle: t.wizardSocialLinksSubtitle }
+  ]
+
   // States
   const [activeStep, setActiveStep] = useState(0)
 
@@ -110,7 +104,7 @@ const StepperAlternativeLabel = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1)
 
     if (activeStep === steps.length - 1) {
-      toast.success('Form Submitted')
+      toast.success(t.wizardFormSubmitted)
     }
   }
 
@@ -126,8 +120,8 @@ const StepperAlternativeLabel = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Username'
-                placeholder='johnDoe'
+                label={t.wizardUsername}
+                placeholder={t.wizardUsernamePlaceholder}
                 value={formData.username}
                 onChange={e => setFormData({ ...formData, username: e.target.value })}
               />
@@ -136,8 +130,8 @@ const StepperAlternativeLabel = () => {
               <CustomTextField
                 fullWidth
                 type='email'
-                label='Email'
-                placeholder='johndoe@gmail.com'
+                label={t.wizardEmail}
+                placeholder={t.wizardEmailPlaceholder}
                 value={formData.email}
                 onChange={e => setFormData({ ...formData, email: e.target.value })}
               />
@@ -145,8 +139,8 @@ const StepperAlternativeLabel = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Password'
-                placeholder='············'
+                label={t.wizardPassword}
+                placeholder={t.wizardPasswordPlaceholder}
                 id='stepper-alternative-password'
                 type={formData.isPasswordShown ? 'text' : 'password'}
                 value={formData.password}
@@ -159,7 +153,7 @@ const StepperAlternativeLabel = () => {
                           edge='end'
                           onClick={handleClickShowPassword}
                           onMouseDown={e => e.preventDefault()}
-                          aria-label='toggle password visibility'
+                          aria-label={t.wizardTogglePasswordVisibility}
                         >
                           <i className={formData.isPasswordShown ? 'tabler-eye-off' : 'tabler-eye'} />
                         </IconButton>
@@ -172,8 +166,8 @@ const StepperAlternativeLabel = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Confirm Password'
-                placeholder='············'
+                label={t.wizardConfirmPassword}
+                placeholder={t.wizardPasswordPlaceholder}
                 id='stepper-alternative-confirm-password'
                 type={formData.isConfirmPasswordShown ? 'text' : 'password'}
                 value={formData.confirmPassword}
@@ -186,7 +180,7 @@ const StepperAlternativeLabel = () => {
                           edge='end'
                           onClick={handleClickShowConfirmPassword}
                           onMouseDown={e => e.preventDefault()}
-                          aria-label='toggle confirm password visibility'
+                          aria-label={t.wizardToggleConfirmPasswordVisibility}
                         >
                           <i className={formData.isConfirmPasswordShown ? 'tabler-eye-off' : 'tabler-eye'} />
                         </IconButton>
@@ -204,8 +198,8 @@ const StepperAlternativeLabel = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='First Name'
-                placeholder='John'
+                label={t.wizardFirstName}
+                placeholder={t.wizardFirstNamePlaceholder}
                 value={formData.firstName}
                 onChange={e => setFormData({ ...formData, firstName: e.target.value })}
               />
@@ -213,8 +207,8 @@ const StepperAlternativeLabel = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Last Name'
-                placeholder='Doe'
+                label={t.wizardLastName}
+                placeholder={t.wizardLastNamePlaceholder}
                 value={formData.lastName}
                 onChange={e => setFormData({ ...formData, lastName: e.target.value })}
               />
@@ -223,22 +217,22 @@ const StepperAlternativeLabel = () => {
               <CustomTextField
                 select
                 fullWidth
-                label='Country'
+                label={t.wizardCountry}
                 value={formData.country}
                 onChange={e => setFormData({ ...formData, country: e.target.value as string })}
               >
-                <MenuItem value=''>Select Country</MenuItem>
-                <MenuItem value='UK'>UK</MenuItem>
-                <MenuItem value='USA'>USA</MenuItem>
-                <MenuItem value='Australia'>Australia</MenuItem>
-                <MenuItem value='Germany'>Germany</MenuItem>
+                <MenuItem value=''>{t.formSelectCountry}</MenuItem>
+                <MenuItem value='UK'>{t.wizardCountryUk}</MenuItem>
+                <MenuItem value='USA'>{t.wizardCountryUsa}</MenuItem>
+                <MenuItem value='Australia'>{t.wizardCountryAustralia}</MenuItem>
+                <MenuItem value='Germany'>{t.wizardCountryGermany}</MenuItem>
               </CustomTextField>
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 select
                 fullWidth
-                label='Language'
+                label={t.wizardLanguage}
                 value={formData.language}
                 slotProps={{
                   select: {
@@ -247,13 +241,13 @@ const StepperAlternativeLabel = () => {
                   }
                 }}
               >
-                <MenuItem value='English'>English</MenuItem>
-                <MenuItem value='French'>French</MenuItem>
-                <MenuItem value='Spanish'>Spanish</MenuItem>
-                <MenuItem value='Portuguese'>Portuguese</MenuItem>
-                <MenuItem value='Italian'>Italian</MenuItem>
-                <MenuItem value='German'>German</MenuItem>
-                <MenuItem value='Arabic'>Arabic</MenuItem>
+                <MenuItem value='English'>{t.wizardLanguageEnglish}</MenuItem>
+                <MenuItem value='French'>{t.wizardLanguageFrench}</MenuItem>
+                <MenuItem value='Spanish'>{t.wizardLanguageSpanish}</MenuItem>
+                <MenuItem value='Portuguese'>{t.wizardLanguagePortuguese}</MenuItem>
+                <MenuItem value='Italian'>{t.wizardLanguageItalian}</MenuItem>
+                <MenuItem value='German'>{t.wizardLanguageGerman}</MenuItem>
+                <MenuItem value='Arabic'>{t.wizardLanguageArabic}</MenuItem>
               </CustomTextField>
             </Grid>
           </>
@@ -264,8 +258,8 @@ const StepperAlternativeLabel = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Facebook'
-                placeholder='https://www.facebook.com/johndoe'
+                label={t.formFacebook}
+                placeholder={t.wizardFacebookPlaceholder}
                 value={formData.facebook}
                 onChange={e => setFormData({ ...formData, facebook: e.target.value })}
               />
@@ -273,8 +267,8 @@ const StepperAlternativeLabel = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Twitter'
-                placeholder='https://www.twitter.com/johndoe'
+                label={t.formTwitter}
+                placeholder={t.wizardTwitterPlaceholder}
                 value={formData.twitter}
                 onChange={e => setFormData({ ...formData, twitter: e.target.value })}
               />
@@ -282,8 +276,8 @@ const StepperAlternativeLabel = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Instagram'
-                placeholder='https://www.instagram.com/johndoe'
+                label={t.formInstagram}
+                placeholder={t.formInstagramPlaceholder}
                 value={formData.instagram}
                 onChange={e => setFormData({ ...formData, instagram: e.target.value })}
               />
@@ -291,8 +285,8 @@ const StepperAlternativeLabel = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Github'
-                placeholder='https://www.github.com/johndoe'
+                label={t.formGithub}
+                placeholder={t.formGithubPlaceholder}
                 value={formData.github}
                 onChange={e => setFormData({ ...formData, github: e.target.value })}
               />
@@ -300,7 +294,7 @@ const StepperAlternativeLabel = () => {
           </>
         )
       default:
-        return 'Unknown step'
+        return t.wizardUnknownStep
     }
   }
 
@@ -332,10 +326,10 @@ const StepperAlternativeLabel = () => {
         <CardContent>
           {activeStep === steps.length ? (
             <>
-              <Typography className='mlb-2 mli-1'>All steps are completed!</Typography>
+              <Typography className='mlb-2 mli-1'>{t.wizardAllStepsCompleted}</Typography>
               <div className='flex justify-end mt-4'>
                 <Button variant='contained' onClick={handleReset}>
-                  Reset
+                  {t.commonReset}
                 </Button>
               </div>
             </>
@@ -358,7 +352,7 @@ const StepperAlternativeLabel = () => {
                       color='secondary'
                       startIcon={<DirectionalIcon ltrIconClass='tabler-arrow-left' rtlIconClass='tabler-arrow-right' />}
                     >
-                      Back
+                      {t.commonBack}
                     </Button>
                     <Button
                       variant='contained'
@@ -371,7 +365,7 @@ const StepperAlternativeLabel = () => {
                         )
                       }
                     >
-                      {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
+                      {activeStep === steps.length - 1 ? t.commonSubmit : t.commonNext}
                     </Button>
                   </Grid>
                 </Grid>

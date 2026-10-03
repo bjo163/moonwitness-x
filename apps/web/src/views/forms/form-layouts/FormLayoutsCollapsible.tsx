@@ -19,11 +19,13 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 
 // Type Imports
+import CustomTextField from '@moonwitness/ui/text-field'
+
 import type { CustomInputHorizontalData } from '@core/components/custom-inputs/types'
 
 // Component Imports
 import CustomInputHorizontal from '@core/components/custom-inputs/Horizontal'
-import CustomTextField from '@moonwitness/ui/text-field'
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
 
 type FormData = {
   fullName: string
@@ -40,30 +42,21 @@ type FormData = {
   cvv: string
 }
 
-// Vars
-const data: CustomInputHorizontalData[] = [
-  {
-    title: 'Standard 3-5 Days',
-    meta: 'Free',
-    content: 'Friday, 15 Nov - Monday, 18 Nov',
-    isSelected: true,
-    value: 'standard'
-  },
-  {
-    title: 'Express',
-    meta: '$5.00',
-    content: 'Friday, 15 Nov - Sunday, 17 Nov',
-    value: 'express'
-  },
-  {
-    title: 'Overnight',
-    meta: '$10.00',
-    content: 'Friday, 15 Nov - Saturday, 16 Nov',
-    value: 'overnight'
-  }
-]
-
 const FormLayoutsCollapsible = () => {
+  const t = useCommonTranslations()
+
+  const data: CustomInputHorizontalData[] = [
+    {
+      title: t.formDeliveryStandard,
+      meta: t.formDeliveryFree,
+      content: t.formDeliveryStandardDate,
+      isSelected: true,
+      value: 'standard'
+    },
+    { title: t.formDeliveryExpress, meta: '$5.00', content: t.formDeliveryExpressDate, value: 'express' },
+    { title: t.formDeliveryOvernight, meta: '$10.00', content: t.formDeliveryOvernightDate, value: 'overnight' }
+  ]
+
   // Vars
   const initialSelectedOption: string = data.filter(item => item.isSelected)[
     data.filter(item => item.isSelected).length - 1
@@ -122,7 +115,7 @@ const FormLayoutsCollapsible = () => {
     <form onSubmit={e => e.preventDefault()}>
       <Accordion expanded={expanded === 'panel1'} onChange={handleExpandChange('panel1')}>
         <AccordionSummary expandIcon={<i className='tabler-chevron-right' />}>
-          <Typography>Delivery Address</Typography>
+          <Typography>{t.formDeliveryAddress}</Typography>
         </AccordionSummary>
         <Divider />
         <AccordionDetails className='pbs-6!'>
@@ -130,8 +123,8 @@ const FormLayoutsCollapsible = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Full Name'
-                placeholder='John Doe'
+                label={t.formFullName}
+                placeholder={t.formFullNamePlaceholder}
                 value={cardData.fullName}
                 onChange={e => setCardData({ ...cardData, fullName: e.target.value })}
               />
@@ -139,8 +132,8 @@ const FormLayoutsCollapsible = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Phone No.'
-                placeholder='123-456-7890'
+                label={t.formPhoneNumber}
+                placeholder={t.formPhonePlaceholder}
                 value={cardData.phone}
                 onChange={e => setCardData({ ...cardData, phone: e.target.value })}
               />
@@ -150,8 +143,8 @@ const FormLayoutsCollapsible = () => {
                 fullWidth
                 rows={4}
                 multiline
-                label='Address'
-                placeholder='1456, Liberty Street'
+                label={t.formAddress}
+                placeholder={t.formAddressPlaceholder}
                 value={cardData.address}
                 onChange={e => setCardData({ ...cardData, address: e.target.value })}
               />
@@ -160,7 +153,7 @@ const FormLayoutsCollapsible = () => {
               <CustomTextField
                 fullWidth
                 type='number'
-                label='ZIP Code'
+                label={t.formZipCode}
                 placeholder='10005'
                 value={cardData.zipCode}
                 onChange={e => setCardData({ ...cardData, zipCode: e.target.value })}
@@ -169,8 +162,8 @@ const FormLayoutsCollapsible = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Landmark'
-                placeholder='Nr Wall Street'
+                label={t.formLandmark}
+                placeholder={t.formLandmarkPlaceholder}
                 value={cardData.landmark}
                 onChange={e => setCardData({ ...cardData, landmark: e.target.value })}
               />
@@ -178,8 +171,8 @@ const FormLayoutsCollapsible = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='City'
-                placeholder='New York'
+                label={t.formCity}
+                placeholder={t.formCityPlaceholder}
                 value={cardData.city}
                 onChange={e => setCardData({ ...cardData, city: e.target.value })}
               />
@@ -188,27 +181,27 @@ const FormLayoutsCollapsible = () => {
               <CustomTextField
                 select
                 fullWidth
-                label='Country'
+                label={t.wizardCountry}
                 value={cardData.country}
                 onChange={e => setCardData({ ...cardData, country: e.target.value })}
               >
-                <MenuItem value=''>Select Country</MenuItem>
-                <MenuItem value='UK'>UK</MenuItem>
-                <MenuItem value='USA'>USA</MenuItem>
-                <MenuItem value='Australia'>Australia</MenuItem>
-                <MenuItem value='Germany'>Germany</MenuItem>
+                <MenuItem value=''>{t.formSelectCountry}</MenuItem>
+                <MenuItem value='UK'>{t.wizardCountryUk}</MenuItem>
+                <MenuItem value='USA'>{t.wizardCountryUsa}</MenuItem>
+                <MenuItem value='Australia'>{t.wizardCountryAustralia}</MenuItem>
+                <MenuItem value='Germany'>{t.wizardCountryGermany}</MenuItem>
               </CustomTextField>
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <FormLabel>Address Type</FormLabel>
+              <FormLabel>{t.formAddressType}</FormLabel>
               <RadioGroup
                 row
                 name='radio-buttons-group'
                 value={cardData.addressType}
                 onChange={e => setCardData({ ...cardData, addressType: e.target.value })}
               >
-                <FormControlLabel value='home' control={<Radio />} label='Home (All day delivery)' />
-                <FormControlLabel value='office' control={<Radio />} label='Office (Delivery between 10 AM - 5 PM)' />
+                <FormControlLabel value='home' control={<Radio />} label={t.formAddressHome} />
+                <FormControlLabel value='office' control={<Radio />} label={t.formAddressOffice} />
               </RadioGroup>
             </Grid>
           </Grid>
@@ -217,7 +210,7 @@ const FormLayoutsCollapsible = () => {
 
       <Accordion expanded={expanded === 'panel2'} onChange={handleExpandChange('panel2')}>
         <AccordionSummary expandIcon={<i className='tabler-chevron-right' />}>
-          <Typography>Delivery Options</Typography>
+          <Typography>{t.formDeliveryOptions}</Typography>
         </AccordionSummary>
         <Divider />
         <AccordionDetails className='pbs-6!'>
@@ -243,7 +236,7 @@ const FormLayoutsCollapsible = () => {
 
       <Accordion expanded={expanded === 'panel3'} onChange={handleExpandChange('panel3')}>
         <AccordionSummary expandIcon={<i className='tabler-chevron-right' />}>
-          <Typography>Payment Method</Typography>
+          <Typography>{t.formPaymentMethod}</Typography>
         </AccordionSummary>
         <Divider />
         <AccordionDetails className='pbs-6!'>
@@ -260,13 +253,13 @@ const FormLayoutsCollapsible = () => {
                     <FormControlLabel
                       value='credit'
                       control={<Radio />}
-                      label='Credit/Debit/ATM Card'
+                      label={t.formCreditCard}
                       className='text-textPrimary'
                     />
                     <FormControlLabel
                       value='cash'
                       control={<Radio />}
-                      label='Cash on Delivery'
+                      label={t.formCashOnDelivery}
                       className='text-textPrimary'
                     />
                   </RadioGroup>
@@ -279,7 +272,7 @@ const FormLayoutsCollapsible = () => {
                           fullWidth
                           name='number'
                           autoComplete='off'
-                          label='Card Number'
+                          label={t.formCardNumber}
                           placeholder='0000 0000 0000 0000'
                           value={cardData.number}
                           onChange={e => setCardData({ ...cardData, number: e.target.value })}
@@ -289,9 +282,9 @@ const FormLayoutsCollapsible = () => {
                         <CustomTextField
                           fullWidth
                           name='name'
-                          label='Name'
+                          label={t.formNameOnCard}
                           autoComplete='off'
-                          placeholder='John Doe'
+                          placeholder={t.formFullNamePlaceholder}
                           value={cardData.name}
                           onChange={e => setCardData({ ...cardData, name: e.target.value })}
                         />
@@ -301,8 +294,8 @@ const FormLayoutsCollapsible = () => {
                           fullWidth
                           name='expiry'
                           autoComplete='off'
-                          label='Expiry Date'
-                          placeholder='MM/YY'
+                          label={t.formExpiryDate}
+                          placeholder={t.formExpiryPlaceholder}
                           value={cardData.expiry}
                           onChange={e => setCardData({ ...cardData, expiry: e.target.value })}
                         />
@@ -311,7 +304,7 @@ const FormLayoutsCollapsible = () => {
                         <CustomTextField
                           fullWidth
                           name='cvv'
-                          label='CVV Code'
+                          label={t.formCvvCode}
                           autoComplete='off'
                           placeholder='123'
                           value={cardData.cvv}
@@ -328,10 +321,10 @@ const FormLayoutsCollapsible = () => {
         <Divider />
         <AccordionDetails className='flex gap-4 pbs-6'>
           <Button type='submit' variant='contained'>
-            Place Order
+            {t.formPlaceOrder}
           </Button>
           <Button type='reset' variant='tonal' color='secondary' onClick={() => handleReset()}>
-            Reset
+            {t.commonReset}
           </Button>
         </AccordionDetails>
       </Accordion>

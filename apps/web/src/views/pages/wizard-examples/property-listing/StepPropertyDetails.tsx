@@ -1,5 +1,5 @@
 // React Imports
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import type { ChangeEvent } from 'react'
 
 // MUI IMports
@@ -14,12 +14,14 @@ import type { TypographyProps } from '@mui/material/Typography'
 import classnames from 'classnames'
 
 // Type Imports
+import CustomTextField from '@moonwitness/ui/text-field'
+
 import type { CustomInputVerticalData } from '@core/components/custom-inputs/types'
 
 // Component Imports
 import CustomInputVertical from '@core/components/custom-inputs/Vertical'
-import CustomTextField from '@moonwitness/ui/text-field'
 import DirectionalIcon from '@components/DirectionalIcon'
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
 
 type Props = {
   activeStep: number
@@ -37,36 +39,38 @@ const Content = styled(Typography, {
   textAlign: 'center'
 }))
 
-// Vars
-const data: CustomInputVerticalData[] = [
-  {
-    value: 'sale',
-    title: 'Sell the property',
-    content: (
-      <Content>
-        Post your property for sale.
-        <br />
-        Unlimited free listing.
-      </Content>
-    ),
-    asset: 'tabler-home',
-    isSelected: true
-  },
-  {
-    value: 'rent',
-    title: 'Rent the property',
-    content: (
-      <Content>
-        Post your property for sale.
-        <br />
-        Unlimited free listing.
-      </Content>
-    ),
-    asset: 'tabler-wallet'
-  }
-]
-
 const StepPropertyDetails = ({ activeStep, handleNext, handlePrev, steps }: Props) => {
+  const t = useCommonTranslations()
+  const countrySelectId = useId()
+
+  const data: CustomInputVerticalData[] = [
+    {
+      value: 'sale',
+      title: t.propertySell,
+      content: (
+        <Content>
+          {t.propertyPostForSale}
+          <br />
+          {t.propertyFreeListing}
+        </Content>
+      ),
+      asset: 'tabler-home',
+      isSelected: true
+    },
+    {
+      value: 'rent',
+      title: t.propertyRent,
+      content: (
+        <Content>
+          {t.propertyPostForRent}
+          <br />
+          {t.propertyFreeListing}
+        </Content>
+      ),
+      asset: 'tabler-wallet'
+    }
+  ]
+
   // Vars
   const initialSelectedOption: string = data.filter(item => item.isSelected)[
     data.filter(item => item.isSelected).length - 1
@@ -105,43 +109,49 @@ const StepPropertyDetails = ({ activeStep, handleNext, handlePrev, steps }: Prop
         )
       })}
       <Grid size={{ xs: 12, md: 6 }}>
-        <CustomTextField select fullWidth label='Property Type' id='validation-property-select' defaultValue=''>
-          <MenuItem value=''>Select Property Type</MenuItem>
-          <MenuItem value='residential'>Residential</MenuItem>
-          <MenuItem value='commercial'>Commercial</MenuItem>
+        <CustomTextField select fullWidth label={t.propertyType} id='validation-property-select' defaultValue=''>
+          <MenuItem value=''>{t.propertySelectType}</MenuItem>
+          <MenuItem value='residential'>{t.propertyResidential}</MenuItem>
+          <MenuItem value='commercial'>{t.propertyCommercial}</MenuItem>
         </CustomTextField>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <CustomTextField fullWidth type='number' label='Zip Code' placeholder='99950' />
+        <CustomTextField fullWidth type='number' label={t.propertyZipCode} placeholder='99950' />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomTextField
           select
           fullWidth
-          label='Country'
-          id='country-select'
-          aria-describedby='country-select'
+          label={t.wizardCountry}
+          id={countrySelectId}
+          aria-describedby={countrySelectId}
           defaultValue=''
         >
-          <MenuItem value=''>Select Country</MenuItem>
-          <MenuItem value='UK'>UK</MenuItem>
-          <MenuItem value='USA'>USA</MenuItem>
-          <MenuItem value='India'>India</MenuItem>
-          <MenuItem value='Australia'>Australia</MenuItem>
-          <MenuItem value='Germany'>Germany</MenuItem>
+          <MenuItem value=''>{t.formSelectCountry}</MenuItem>
+          <MenuItem value='UK'>{t.wizardCountryUk}</MenuItem>
+          <MenuItem value='USA'>{t.wizardCountryUsa}</MenuItem>
+          <MenuItem value='India'>{t.userCountryIndia}</MenuItem>
+          <MenuItem value='Australia'>{t.wizardCountryAustralia}</MenuItem>
+          <MenuItem value='Germany'>{t.wizardCountryGermany}</MenuItem>
         </CustomTextField>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <CustomTextField fullWidth label='Landmark' placeholder='Nr. Hard Rock Cafe' />
+        <CustomTextField fullWidth label={t.formLandmark} placeholder={t.propertyLandmarkPlaceholder} />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <CustomTextField fullWidth label='City' placeholder='Los Angeles' />
+        <CustomTextField fullWidth label={t.formCity} placeholder={t.propertyCityPlaceholder} />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <CustomTextField fullWidth label='State' placeholder='California' />
+        <CustomTextField fullWidth label={t.propertyState} placeholder={t.propertyStatePlaceholder} />
       </Grid>
       <Grid size={{ xs: 12 }}>
-        <CustomTextField fullWidth multiline minRows={2} label='Address' placeholder='12, Business Park' />
+        <CustomTextField
+          fullWidth
+          multiline
+          minRows={2}
+          label={t.formAddress}
+          placeholder={t.propertyAddressPlaceholder}
+        />
       </Grid>
       <Grid size={{ xs: 12 }}>
         <div className='flex items-center justify-between'>
@@ -152,7 +162,7 @@ const StepPropertyDetails = ({ activeStep, handleNext, handlePrev, steps }: Prop
             onClick={handlePrev}
             startIcon={<DirectionalIcon ltrIconClass='tabler-arrow-left' rtlIconClass='tabler-arrow-right' />}
           >
-            Previous
+            {t.formPrevious}
           </Button>
           <Button
             variant='contained'
@@ -166,7 +176,7 @@ const StepPropertyDetails = ({ activeStep, handleNext, handlePrev, steps }: Prop
               )
             }
           >
-            {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
+            {activeStep === steps.length - 1 ? t.commonSubmit : t.commonNext}
           </Button>
         </div>
       </Grid>

@@ -13,10 +13,12 @@ import Divider from '@mui/material/Divider'
 import { useForm, Controller } from 'react-hook-form'
 
 // Types Imports
+import CustomTextField from '@moonwitness/ui/text-field'
+
 import type { UsersType } from '@/types/apps/userTypes'
 
 // Component Imports
-import CustomTextField from '@moonwitness/ui/text-field'
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
 
 type Props = {
   open: boolean
@@ -48,6 +50,8 @@ const initialData = {
 }
 
 const AddUserDrawer = (props: Props) => {
+  const t = useCommonTranslations()
+
   // Props
   const { open, handleClose, userData, setData } = props
 
@@ -108,7 +112,7 @@ const AddUserDrawer = (props: Props) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <div className='flex items-center justify-between plb-5 pli-6'>
-        <Typography variant='h5'>Add New User</Typography>
+        <Typography variant='h5'>{t.userAddNew}</Typography>
         <IconButton size='small' onClick={handleReset}>
           <i className='tabler-x text-2xl text-textPrimary' />
         </IconButton>
@@ -124,9 +128,9 @@ const AddUserDrawer = (props: Props) => {
               <CustomTextField
                 {...field}
                 fullWidth
-                label='Full Name'
-                placeholder='John Doe'
-                {...(errors.fullName && { error: true, helperText: 'This field is required.' })}
+                label={t.formFullName}
+                placeholder={t.formFullNamePlaceholder}
+                {...(errors.fullName && { error: true, helperText: t.wizardRequired })}
               />
             )}
           />
@@ -138,9 +142,9 @@ const AddUserDrawer = (props: Props) => {
               <CustomTextField
                 {...field}
                 fullWidth
-                label='Username'
-                placeholder='johndoe'
-                {...(errors.username && { error: true, helperText: 'This field is required.' })}
+                label={t.wizardUsername}
+                placeholder={t.userUsernamePlaceholder}
+                {...(errors.username && { error: true, helperText: t.wizardRequired })}
               />
             )}
           />
@@ -153,9 +157,9 @@ const AddUserDrawer = (props: Props) => {
                 {...field}
                 fullWidth
                 type='email'
-                label='Email'
-                placeholder='johndoe@gmail.com'
-                {...(errors.email && { error: true, helperText: 'This field is required.' })}
+                label={t.wizardEmail}
+                placeholder={t.wizardEmailPlaceholder}
+                {...(errors.email && { error: true, helperText: t.wizardRequired })}
               />
             )}
           />
@@ -168,15 +172,15 @@ const AddUserDrawer = (props: Props) => {
                 select
                 fullWidth
                 id='select-role'
-                label='Select Role'
+                label={t.userSelectRole}
                 {...field}
-                {...(errors.role && { error: true, helperText: 'This field is required.' })}
+                {...(errors.role && { error: true, helperText: t.wizardRequired })}
               >
-                <MenuItem value='admin'>Admin</MenuItem>
-                <MenuItem value='author'>Author</MenuItem>
-                <MenuItem value='editor'>Editor</MenuItem>
-                <MenuItem value='maintainer'>Maintainer</MenuItem>
-                <MenuItem value='subscriber'>Subscriber</MenuItem>
+                <MenuItem value='admin'>{t.userRoleAdmin}</MenuItem>
+                <MenuItem value='author'>{t.userRoleAuthor}</MenuItem>
+                <MenuItem value='editor'>{t.userRoleEditor}</MenuItem>
+                <MenuItem value='maintainer'>{t.userRoleMaintainer}</MenuItem>
+                <MenuItem value='subscriber'>{t.userRoleSubscriber}</MenuItem>
               </CustomTextField>
             )}
           />
@@ -189,17 +193,17 @@ const AddUserDrawer = (props: Props) => {
                 select
                 fullWidth
                 id='select-plan'
-                label='Select Plan'
+                label={t.userSelectPlan}
                 {...field}
                 slotProps={{
-                  htmlInput: { placeholder: 'Select Plan' }
+                  htmlInput: { placeholder: t.userSelectPlan }
                 }}
-                {...(errors.plan && { error: true, helperText: 'This field is required.' })}
+                {...(errors.plan && { error: true, helperText: t.wizardRequired })}
               >
-                <MenuItem value='basic'>Basic</MenuItem>
-                <MenuItem value='company'>Company</MenuItem>
-                <MenuItem value='enterprise'>Enterprise</MenuItem>
-                <MenuItem value='team'>Team</MenuItem>
+                <MenuItem value='basic'>{t.userPlanBasic}</MenuItem>
+                <MenuItem value='company'>{t.userPlanCompany}</MenuItem>
+                <MenuItem value='enterprise'>{t.userPlanEnterprise}</MenuItem>
+                <MenuItem value='team'>{t.userPlanTeam}</MenuItem>
               </CustomTextField>
             )}
           />
@@ -212,20 +216,20 @@ const AddUserDrawer = (props: Props) => {
                 select
                 fullWidth
                 id='select-status'
-                label='Select Status'
+                label={t.userSelectStatus}
                 {...field}
-                {...(errors.status && { error: true, helperText: 'This field is required.' })}
+                {...(errors.status && { error: true, helperText: t.wizardRequired })}
               >
-                <MenuItem value='pending'>Pending</MenuItem>
-                <MenuItem value='active'>Active</MenuItem>
-                <MenuItem value='inactive'>Inactive</MenuItem>
+                <MenuItem value='pending'>{t.userStatusPending}</MenuItem>
+                <MenuItem value='active'>{t.userStatusActive}</MenuItem>
+                <MenuItem value='inactive'>{t.userStatusInactive}</MenuItem>
               </CustomTextField>
             )}
           />
           <CustomTextField
-            label='Company'
+            label={t.userCompany}
             fullWidth
-            placeholder='Company PVT LTD'
+            placeholder={t.userCompanyPlaceholder}
             value={formData.company}
             onChange={e => setFormData({ ...formData, company: e.target.value })}
           />
@@ -235,30 +239,30 @@ const AddUserDrawer = (props: Props) => {
             id='country'
             value={formData.country}
             onChange={e => setFormData({ ...formData, country: e.target.value })}
-            label='Select Country'
+            label={t.formSelectCountry}
             slotProps={{
-              htmlInput: { placeholder: 'Country' }
+              htmlInput: { placeholder: t.wizardCountry }
             }}
           >
-            <MenuItem value='India'>India</MenuItem>
-            <MenuItem value='USA'>USA</MenuItem>
-            <MenuItem value='Australia'>Australia</MenuItem>
-            <MenuItem value='Germany'>Germany</MenuItem>
+            <MenuItem value='India'>{t.userCountryIndia}</MenuItem>
+            <MenuItem value='USA'>{t.wizardCountryUsa}</MenuItem>
+            <MenuItem value='Australia'>{t.wizardCountryAustralia}</MenuItem>
+            <MenuItem value='Germany'>{t.wizardCountryGermany}</MenuItem>
           </CustomTextField>
           <CustomTextField
-            label='Contact'
+            label={t.userContact}
             type='number'
             fullWidth
-            placeholder='(397) 294-5153'
+            placeholder={t.userContactPlaceholder}
             value={formData.contact}
             onChange={e => setFormData({ ...formData, contact: e.target.value })}
           />
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
-              Submit
+              {t.commonSubmit}
             </Button>
             <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
-              Cancel
+              {t.commonCancel}
             </Button>
           </div>
         </form>

@@ -29,6 +29,7 @@ import CustomTextField from '@moonwitness/ui/text-field'
 
 // Styled Component Imports
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
 
 type FormValues = {
   firstName: string
@@ -43,6 +44,8 @@ type FormValues = {
 }
 
 const FormValidationBasic = () => {
+  const t = useCommonTranslations()
+
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
 
@@ -68,11 +71,11 @@ const FormValidationBasic = () => {
 
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
-  const onSubmit = () => toast.success('Form Submitted')
+  const onSubmit = () => toast.success(t.wizardFormSubmitted)
 
   return (
     <Card>
-      <CardHeader title='Basic' />
+      <CardHeader title={t.formValidationBasic} />
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={6}>
@@ -85,9 +88,9 @@ const FormValidationBasic = () => {
                   <CustomTextField
                     {...field}
                     fullWidth
-                    label='First Name'
-                    placeholder='John'
-                    {...(errors.firstName && { error: true, helperText: 'This field is required.' })}
+                    label={t.wizardFirstName}
+                    placeholder={t.wizardFirstNamePlaceholder}
+                    {...(errors.firstName && { error: true, helperText: t.wizardRequired })}
                   />
                 )}
               />
@@ -101,9 +104,9 @@ const FormValidationBasic = () => {
                   <CustomTextField
                     {...field}
                     fullWidth
-                    label='Last Name'
-                    placeholder='Doe'
-                    {...(errors.lastName && { error: true, helperText: 'This field is required.' })}
+                    label={t.wizardLastName}
+                    placeholder={t.wizardLastNamePlaceholder}
+                    {...(errors.lastName && { error: true, helperText: t.wizardRequired })}
                   />
                 )}
               />
@@ -118,9 +121,9 @@ const FormValidationBasic = () => {
                     {...field}
                     fullWidth
                     type='email'
-                    label='Email'
-                    placeholder='johndoe@gmail.com'
-                    {...(errors.email && { error: true, helperText: 'This field is required.' })}
+                    label={t.wizardEmail}
+                    placeholder={t.wizardEmailPlaceholder}
+                    {...(errors.email && { error: true, helperText: t.wizardRequired })}
                   />
                 )}
               />
@@ -134,8 +137,8 @@ const FormValidationBasic = () => {
                   <CustomTextField
                     {...field}
                     fullWidth
-                    label='Password'
-                    placeholder='············'
+                    label={t.wizardPassword}
+                    placeholder={t.wizardPasswordPlaceholder}
                     id='form-validation-basic-password'
                     type={isPasswordShown ? 'text' : 'password'}
                     slotProps={{
@@ -146,7 +149,7 @@ const FormValidationBasic = () => {
                               edge='end'
                               onClick={handleClickShowPassword}
                               onMouseDown={e => e.preventDefault()}
-                              aria-label='toggle password visibility'
+                              aria-label={t.wizardTogglePasswordVisibility}
                             >
                               <i className={isPasswordShown ? 'tabler-eye-off' : 'tabler-eye'} />
                             </IconButton>
@@ -154,7 +157,7 @@ const FormValidationBasic = () => {
                         )
                       }
                     }}
-                    {...(errors.password && { error: true, helperText: 'This field is required.' })}
+                    {...(errors.password && { error: true, helperText: t.wizardRequired })}
                   />
                 )}
               />
@@ -170,14 +173,14 @@ const FormValidationBasic = () => {
                     showYearDropdown
                     showMonthDropdown
                     onChange={onChange}
-                    placeholderText='MM/DD/YYYY'
+                    placeholderText={t.formDatePlaceholder}
                     customInput={
                       <CustomTextField
                         value={value}
                         onChange={onChange}
                         fullWidth
-                        label='Date Of Birth'
-                        {...(errors.dob && { error: true, helperText: 'This field is required.' })}
+                        label={t.formBirthDate}
+                        {...(errors.dob && { error: true, helperText: t.wizardRequired })}
                       />
                     }
                   />
@@ -190,16 +193,16 @@ const FormValidationBasic = () => {
                 control={control}
                 rules={{ required: true }}
                 render={({ field }) => (
-                  <CustomTextField select fullWidth label='Country' {...field} error={Boolean(errors.select)}>
-                    <MenuItem value=''>Select Country</MenuItem>
-                    <MenuItem value='UK'>UK</MenuItem>
-                    <MenuItem value='USA'>USA</MenuItem>
-                    <MenuItem value='Australia'>Australia</MenuItem>
-                    <MenuItem value='Germany'>Germany</MenuItem>
+                  <CustomTextField select fullWidth label={t.wizardCountry} {...field} error={Boolean(errors.select)}>
+                    <MenuItem value=''>{t.formSelectCountry}</MenuItem>
+                    <MenuItem value='UK'>{t.wizardCountryUk}</MenuItem>
+                    <MenuItem value='USA'>{t.wizardCountryUsa}</MenuItem>
+                    <MenuItem value='Australia'>{t.wizardCountryAustralia}</MenuItem>
+                    <MenuItem value='Germany'>{t.wizardCountryGermany}</MenuItem>
                   </CustomTextField>
                 )}
               />
-              {errors.select && <FormHelperText error>This field is required.</FormHelperText>}
+              {errors.select && <FormHelperText error>{t.wizardRequired}</FormHelperText>}
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Controller
@@ -212,28 +215,28 @@ const FormValidationBasic = () => {
                     rows={4}
                     fullWidth
                     multiline
-                    label='Bio'
-                    {...(errors.textarea && { error: true, helperText: 'This field is required.' })}
+                    label={t.formBio}
+                    {...(errors.textarea && { error: true, helperText: t.wizardRequired })}
                   />
                 )}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>
               <FormControl error={Boolean(errors.radio)}>
-                <FormLabel>Gender</FormLabel>
+                <FormLabel>{t.formGender}</FormLabel>
                 <Controller
                   name='radio'
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
                     <RadioGroup row {...field} name='radio-buttons-group'>
-                      <FormControlLabel value='female' control={<Radio />} label='Female' />
-                      <FormControlLabel value='male' control={<Radio />} label='Male' />
-                      <FormControlLabel value='other' control={<Radio />} label='Other' />
+                      <FormControlLabel value='female' control={<Radio />} label={t.formGenderFemale} />
+                      <FormControlLabel value='male' control={<Radio />} label={t.formGenderMale} />
+                      <FormControlLabel value='other' control={<Radio />} label={t.formGenderOther} />
                     </RadioGroup>
                   )}
                 />
-                {errors.radio && <FormHelperText error>This field is required.</FormHelperText>}
+                {errors.radio && <FormHelperText error>{t.wizardRequired}</FormHelperText>}
               </FormControl>
             </Grid>
             <Grid size={{ xs: 12 }}>
@@ -243,18 +246,18 @@ const FormValidationBasic = () => {
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                    <FormControlLabel control={<Checkbox {...field} />} label='Agree to our terms and conditions' />
+                    <FormControlLabel control={<Checkbox {...field} />} label={t.formAgreeTerms} />
                   )}
                 />
-                {errors.checkbox && <FormHelperText error>This field is required.</FormHelperText>}
+                {errors.checkbox && <FormHelperText error>{t.wizardRequired}</FormHelperText>}
               </FormControl>
             </Grid>
             <Grid size={{ xs: 12 }} className='flex gap-4'>
               <Button variant='contained' type='submit'>
-                Submit
+                {t.commonSubmit}
               </Button>
               <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
-                Reset
+                {t.commonReset}
               </Button>
             </Grid>
           </Grid>

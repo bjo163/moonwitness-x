@@ -30,7 +30,9 @@ import classnames from 'classnames'
 // Components Imports
 import CustomAvatar from '@moonwitness/ui/avatar'
 import CustomTextField from '@moonwitness/ui/text-field'
+
 import DirectionalIcon from '@components/DirectionalIcon'
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
 
 // Styled Component Imports
 import StepperWrapper from '@core/styles/stepper'
@@ -41,24 +43,6 @@ interface State {
   showPassword: boolean
   showPassword2: boolean
 }
-
-const steps = [
-  {
-    icon: 'tabler-file-analytics',
-    title: 'Account Details',
-    subtitle: 'Enter your Account Details'
-  },
-  {
-    icon: 'tabler-user',
-    title: 'Personal Info',
-    subtitle: 'Setup Information'
-  },
-  {
-    icon: 'tabler-brand-instagram',
-    title: 'Social Links',
-    subtitle: 'Add Social Links'
-  }
-]
 
 const StepperHeaderContainer = styled(CardContent)<CardContentProps>(({ theme }) => ({
   borderRight: `1px solid 'var(--mui-palette-divider)'`,
@@ -90,6 +74,14 @@ const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
 }))
 
 const StepperCustomVertical = () => {
+  const t = useCommonTranslations()
+
+  const steps = [
+    { icon: 'tabler-file-analytics', title: t.wizardAccountDetails, subtitle: t.wizardAccountDetailsSubtitle },
+    { icon: 'tabler-user', title: t.wizardPersonalInfo, subtitle: t.wizardPersonalInfoSubtitle },
+    { icon: 'tabler-brand-instagram', title: t.wizardSocialLinks, subtitle: t.wizardSocialLinksSubtitle }
+  ]
+
   // States
   const [email, setEmail] = useState<string>('')
   const [google, setGoogle] = useState<string>('')
@@ -119,7 +111,7 @@ const StepperCustomVertical = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1)
 
     if (activeStep === steps.length - 1) {
-      toast.success('Form Submitted')
+      toast.success(t.wizardFormSubmitted)
     }
   }
 
@@ -169,9 +161,9 @@ const StepperCustomVertical = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Username'
+                label={t.wizardUsername}
                 value={username}
-                placeholder='JohnDoe'
+                placeholder={t.wizardUsernamePlaceholder}
                 onChange={e => setUsername(e.target.value)}
               />
             </Grid>
@@ -179,17 +171,17 @@ const StepperCustomVertical = () => {
               <CustomTextField
                 fullWidth
                 type='email'
-                label='Email'
+                label={t.wizardEmail}
                 value={email}
-                placeholder='johndoe@gmail.com'
+                placeholder={t.wizardEmailPlaceholder}
                 onChange={e => setEmail(e.target.value)}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Password'
-                placeholder='············'
+                label={t.wizardPassword}
+                placeholder={t.wizardPasswordPlaceholder}
                 value={state.password}
                 id='stepper-custom-vertical-account-password'
                 onChange={handlePasswordChange('password')}
@@ -202,7 +194,7 @@ const StepperCustomVertical = () => {
                           edge='end'
                           onClick={handleClickShowPassword}
                           onMouseDown={e => e.preventDefault()}
-                          aria-label='toggle password visibility'
+                          aria-label={t.wizardTogglePasswordVisibility}
                         >
                           <i className={state.showPassword ? 'tabler-eye' : 'tabler-eye-off'} />
                         </IconButton>
@@ -216,8 +208,8 @@ const StepperCustomVertical = () => {
               <CustomTextField
                 fullWidth
                 value={state.password2}
-                label='Confirm Password'
-                placeholder='············'
+                label={t.wizardConfirmPassword}
+                placeholder={t.wizardPasswordPlaceholder}
                 id='stepper-custom-vertical-account-password-2'
                 onChange={handleConfirmChange('password2')}
                 type={state.showPassword2 ? 'text' : 'password'}
@@ -228,7 +220,7 @@ const StepperCustomVertical = () => {
                         <IconButton
                           edge='end'
                           onMouseDown={e => e.preventDefault()}
-                          aria-label='toggle password visibility'
+                          aria-label={t.wizardToggleConfirmPasswordVisibility}
                           onClick={handleClickShowConfirmPassword}
                         >
                           <i className={state.showPassword2 ? 'tabler-eye' : 'tabler-eye-off'} />
@@ -248,8 +240,8 @@ const StepperCustomVertical = () => {
               <CustomTextField
                 fullWidth
                 value={firstName}
-                label='First Name'
-                placeholder='John'
+                label={t.wizardFirstName}
+                placeholder={t.wizardFirstNamePlaceholder}
                 onChange={e => setFirstName(e.target.value)}
               />
             </Grid>
@@ -257,8 +249,8 @@ const StepperCustomVertical = () => {
               <CustomTextField
                 fullWidth
                 value={lastName}
-                label='Last Name'
-                placeholder='Doe'
+                label={t.wizardLastName}
+                placeholder={t.wizardLastNamePlaceholder}
                 onChange={e => setLastName(e.target.value)}
               />
             </Grid>
@@ -266,23 +258,23 @@ const StepperCustomVertical = () => {
               <CustomTextField
                 select
                 fullWidth
-                label='Country'
+                label={t.wizardCountry}
                 value={country}
                 onChange={e => setCountry(e.target.value)}
                 id='stepper-custom-vertical-personal-select'
               >
-                <MenuItem value=''>Select Country</MenuItem>
-                <MenuItem value='UK'>UK</MenuItem>
-                <MenuItem value='USA'>USA</MenuItem>
-                <MenuItem value='Australia'>Australia</MenuItem>
-                <MenuItem value='Germany'>Germany</MenuItem>
+                <MenuItem value=''>{t.formSelectCountry}</MenuItem>
+                <MenuItem value='UK'>{t.wizardCountryUk}</MenuItem>
+                <MenuItem value='USA'>{t.wizardCountryUsa}</MenuItem>
+                <MenuItem value='Australia'>{t.wizardCountryAustralia}</MenuItem>
+                <MenuItem value='Germany'>{t.wizardCountryGermany}</MenuItem>
               </CustomTextField>
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 select
                 fullWidth
-                label='Language'
+                label={t.wizardLanguage}
                 id='stepper-custom-vertical-personal-multiple-select'
                 slotProps={{
                   select: {
@@ -292,13 +284,13 @@ const StepperCustomVertical = () => {
                   }
                 }}
               >
-                <MenuItem value='English'>English</MenuItem>
-                <MenuItem value='French'>French</MenuItem>
-                <MenuItem value='Spanish'>Spanish</MenuItem>
-                <MenuItem value='Portuguese'>Portuguese</MenuItem>
-                <MenuItem value='Italian'>Italian</MenuItem>
-                <MenuItem value='German'>German</MenuItem>
-                <MenuItem value='Arabic'>Arabic</MenuItem>
+                <MenuItem value='English'>{t.wizardLanguageEnglish}</MenuItem>
+                <MenuItem value='French'>{t.wizardLanguageFrench}</MenuItem>
+                <MenuItem value='Spanish'>{t.wizardLanguageSpanish}</MenuItem>
+                <MenuItem value='Portuguese'>{t.wizardLanguagePortuguese}</MenuItem>
+                <MenuItem value='Italian'>{t.wizardLanguageItalian}</MenuItem>
+                <MenuItem value='German'>{t.wizardLanguageGerman}</MenuItem>
+                <MenuItem value='Arabic'>{t.wizardLanguageArabic}</MenuItem>
               </CustomTextField>
             </Grid>
           </Fragment>
@@ -309,43 +301,43 @@ const StepperCustomVertical = () => {
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Twitter'
+                label={t.formTwitter}
                 value={twitter}
                 onChange={e => setTwitter(e.target.value)}
-                placeholder='https://twitter.com/johndoe'
+                placeholder={t.wizardTwitterPlaceholder}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Facebook'
+                label={t.formFacebook}
                 value={facebook}
                 onChange={e => setFacebook(e.target.value)}
-                placeholder='https://facebook.com/johndoe'
+                placeholder={t.wizardFacebookPlaceholder}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='Google+'
+                label={t.formGooglePlus}
                 value={google}
                 onChange={e => setGoogle(e.target.value)}
-                placeholder='https://plus.google.com/johndoe'
+                placeholder={t.formGooglePlusPlaceholder}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <CustomTextField
                 fullWidth
-                label='LinkedIn'
+                label={t.formLinkedIn}
                 value={linkedIn}
                 onChange={e => setLinkedIn(e.target.value)}
-                placeholder='https://linkedin.com/johndoe'
+                placeholder={t.formLinkedInPlaceholder}
               />
             </Grid>
           </Fragment>
         )
       default:
-        return 'Unknown Step'
+        return t.wizardUnknownStep
     }
   }
 
@@ -353,10 +345,10 @@ const StepperCustomVertical = () => {
     if (activeStep === steps.length) {
       return (
         <>
-          <Typography>All steps are completed!</Typography>
+          <Typography>{t.wizardAllStepsCompleted}</Typography>
           <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
             <Button variant='contained' onClick={handleReset}>
-              Reset
+              {t.commonReset}
             </Button>
           </Box>
         </>
@@ -382,7 +374,7 @@ const StepperCustomVertical = () => {
                 onClick={handleBack}
                 startIcon={<DirectionalIcon ltrIconClass='tabler-arrow-left' rtlIconClass='tabler-arrow-right' />}
               >
-                Back
+                {t.commonBack}
               </Button>
               <Button
                 variant='contained'
@@ -395,7 +387,7 @@ const StepperCustomVertical = () => {
                   )
                 }
               >
-                {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
+                {activeStep === steps.length - 1 ? t.commonSubmit : t.commonNext}
               </Button>
             </Grid>
           </Grid>

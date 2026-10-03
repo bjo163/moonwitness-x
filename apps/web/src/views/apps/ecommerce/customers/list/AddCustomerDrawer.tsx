@@ -15,10 +15,12 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { useForm, Controller } from 'react-hook-form'
 
 // Type Imports
+import CustomTextField from '@moonwitness/ui/text-field'
+
 import type { Customer } from '@/types/apps/ecommerceTypes'
 
 // Component Imports
-import CustomTextField from '@moonwitness/ui/text-field'
+import { useCommonTranslations } from '@/contexts/CommonTranslationContext'
 
 type Props = {
   open: boolean
@@ -42,19 +44,6 @@ type FormNonValidateType = {
   postcode: string
 }
 
-type countryType = {
-  country: string
-}
-
-export const country: { [key: string]: countryType } = {
-  india: { country: 'India' },
-  australia: { country: 'Australia' },
-  france: { country: 'France' },
-  brazil: { country: 'Brazil' },
-  us: { country: 'United States' },
-  china: { country: 'China' }
-}
-
 // Vars
 const initialData = {
   contact: '',
@@ -66,6 +55,8 @@ const initialData = {
 }
 
 const AddCustomerDrawer = (props: Props) => {
+  const t = useCommonTranslations()
+
   // Props
   const { open, handleClose, setData, customerData } = props
 
@@ -92,7 +83,16 @@ const AddCustomerDrawer = (props: Props) => {
       customer: data.fullName,
       customerId: customerData?.[Math.floor(Math.random() * 100) + 1].customerId ?? '1',
       email: data.email,
-      country: `${country[data.country].country}`,
+      country: `${
+        {
+          india: t.customerCountryIndia,
+          australia: t.customerCountryAustralia,
+          france: t.customerCountryFrance,
+          brazil: t.customerCountryBrazil,
+          us: t.customerCountryUs,
+          china: t.customerCountryChina
+        }[data.country]
+      }`,
       countryCode: 'st',
       countryFlag: `/images/cards/${data.country}.png`,
       order: Math.floor(Math.random() * 1000) + 1,
@@ -122,7 +122,7 @@ const AddCustomerDrawer = (props: Props) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <div className='flex items-center justify-between pli-6 plb-5'>
-        <Typography variant='h5'>Add a Customer</Typography>
+        <Typography variant='h5'>{t.customerAdd}</Typography>
         <IconButton size='small' onClick={handleReset}>
           <i className='tabler-x text-2xl' />
         </IconButton>
@@ -132,7 +132,7 @@ const AddCustomerDrawer = (props: Props) => {
         <div className='p-6'>
           <form onSubmit={handleSubmit(data => onSubmit(data))} className='flex flex-col gap-5'>
             <Typography color='text.primary' className='font-medium'>
-              Basic Information
+              {t.customerBasicInformation}
             </Typography>
             <Controller
               name='fullName'
@@ -142,9 +142,9 @@ const AddCustomerDrawer = (props: Props) => {
                 <CustomTextField
                   {...field}
                   fullWidth
-                  label='Name'
-                  placeholder='John Doe'
-                  {...(errors.fullName && { error: true, helperText: 'This field is required.' })}
+                  label={t.customerName}
+                  placeholder={t.formFullNamePlaceholder}
+                  {...(errors.fullName && { error: true, helperText: t.wizardRequired })}
                 />
               )}
             />
@@ -157,9 +157,9 @@ const AddCustomerDrawer = (props: Props) => {
                   {...field}
                   fullWidth
                   type='email'
-                  label='Email'
-                  placeholder='johndoe@gmail.com'
-                  {...(errors.email && { error: true, helperText: 'This field is required.' })}
+                  label={t.wizardEmail}
+                  placeholder={t.wizardEmailPlaceholder}
+                  {...(errors.email && { error: true, helperText: t.wizardRequired })}
                 />
               )}
             />
@@ -172,85 +172,85 @@ const AddCustomerDrawer = (props: Props) => {
                   select
                   fullWidth
                   id='country'
-                  label='Country'
+                  label={t.wizardCountry}
                   {...field}
-                  {...(errors.country && { error: true, helperText: 'This field is required.' })}
+                  {...(errors.country && { error: true, helperText: t.wizardRequired })}
                 >
-                  <MenuItem value='india'>India</MenuItem>
-                  <MenuItem value='australia'>Australia</MenuItem>
-                  <MenuItem value='france'>France</MenuItem>
-                  <MenuItem value='brazil'>Brazil</MenuItem>
-                  <MenuItem value='us'>USA</MenuItem>
-                  <MenuItem value='china'>China</MenuItem>
+                  <MenuItem value='india'>{t.customerCountryIndia}</MenuItem>
+                  <MenuItem value='australia'>{t.customerCountryAustralia}</MenuItem>
+                  <MenuItem value='france'>{t.customerCountryFrance}</MenuItem>
+                  <MenuItem value='brazil'>{t.customerCountryBrazil}</MenuItem>
+                  <MenuItem value='us'>{t.customerCountryUs}</MenuItem>
+                  <MenuItem value='china'>{t.customerCountryChina}</MenuItem>
                 </CustomTextField>
               )}
             />
             <Typography color='text.primary' className='font-medium'>
-              Shipping Information
+              {t.customerShippingInformation}
             </Typography>
             <CustomTextField
               fullWidth
-              label='Address Line 1'
+              label={t.customerAddressLine1}
               name='address1'
-              placeholder='45 Roker Terrace'
+              placeholder={t.customerAddressLine1Placeholder}
               value={formData.address1}
               onChange={e => setFormData({ ...formData, address1: e.target.value })}
             />
             <CustomTextField
               fullWidth
-              label='Address Line 2'
+              label={t.customerAddressLine2}
               name='address2'
-              placeholder='Street 69'
+              placeholder={t.customerAddressLine2Placeholder}
               value={formData.address2}
               onChange={e => setFormData({ ...formData, address2: e.target.value })}
             />
             <CustomTextField
               fullWidth
-              label='Town'
+              label={t.customerTown}
               name='town'
-              placeholder='New York'
+              placeholder={t.customerTownPlaceholder}
               value={formData.town}
               onChange={e => setFormData({ ...formData, town: e.target.value })}
             />
             <CustomTextField
               fullWidth
-              label='State/Province'
+              label={t.customerStateProvince}
               name='state'
-              placeholder='Southern tip'
+              placeholder={t.customerStatePlaceholder}
               value={formData.state}
               onChange={e => setFormData({ ...formData, state: e.target.value })}
             />
             <CustomTextField
               fullWidth
-              label='Post Code'
+              label={t.customerPostCode}
               name='postcode'
-              placeholder='734990'
+              placeholder={t.customerPostCodePlaceholder}
               value={formData.postcode}
               onChange={e => setFormData({ ...formData, postcode: e.target.value })}
             />
             <CustomTextField
-              label='Mobile'
+              label={t.customerMobile}
               type='number'
               fullWidth
-              placeholder='+(123) 456-7890'
+              placeholder={t.customerMobilePlaceholder}
               value={formData.contact}
               onChange={e => setFormData({ ...formData, contact: e.target.value })}
             />
             <div className='flex justify-between'>
               <div className='flex flex-col items-start gap-1'>
                 <Typography color='text.primary' className='font-medium'>
-                  Use as a billing address?
+                  {t.customerUseAsBillingAddress}
                 </Typography>
-                <Typography variant='body2'>Please check budget for more info.</Typography>
+                <Typography variant='body2'>{t.customerBillingAddressHelp}</Typography>
               </div>
               <Switch defaultChecked />
             </div>
             <div className='flex items-center gap-4'>
               <Button variant='contained' type='submit'>
-                Add
+                {t.commonAdd}
               </Button>
               <Button variant='tonal' color='error' type='reset' onClick={handleReset}>
-                Discard
+                {t.commonDiscard}
               </Button>
             </div>
           </form>
